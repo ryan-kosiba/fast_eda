@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analysis Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ===================== BRAND + ENGINE STYLES (do not edit) ===================== */
+:root{
+  --navy:#00244D; --blue:#2B8FFF; --fill:#E5F1FF; --ink:#252528; --slate:#5C6370;
+  --surface:#F6F8FA; --line:#E1E6EC; --orange:#F97316; --teal:#359797; --soft:#9DC9FF; --grey:#A8B3BF;
+  --font:'Poppins',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  --hero:'Marcellus',Georgia,serif;
+  --W:1600px; --H:900px; --pad:72px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0b1a33;overflow:hidden;font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased}
+#viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#stage{width:var(--W);height:var(--H);position:relative;background:#fff;overflow:hidden;transform-origin:center center;border-radius:6px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.slide{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .35s ease, transform .35s ease;transform:translateY(24px)}
+.slide.active{opacity:1;pointer-events:auto;transform:none}
+.slide.before{transform:translateY(-24px)}
+.track{display:flex;height:100%;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+.panel{flex:0 0 var(--W);height:100%;padding:var(--pad) var(--pad) 96px;display:flex;flex-direction:column;overflow:hidden;font-size:22px}
+/* chrome */
+#bar{position:absolute;left:0;top:0;height:5px;background:var(--blue);transition:width .35s ease;z-index:5}
+#foot{position:absolute;left:var(--pad);right:var(--pad);bottom:28px;display:flex;align-items:center;gap:18px;font-size:15px;color:var(--slate);z-index:5}
+#foot .logo{height:22px}
+#foot .logo-text{font-weight:600;color:var(--blue);font-size:18px;letter-spacing:-.3px}
+#foot .sect{flex:1}
+#dots{display:flex;gap:8px;align-items:center}
+#dots i{width:9px;height:9px;border-radius:9999px;background:var(--line);display:block;transition:all .25s}
+#dots i.on{background:var(--blue);width:26px}
+#more{color:var(--blue);font-weight:600;display:none}
+#num{font-variant-numeric:tabular-nums}
+.dark #foot,.dark #foot .sect{color:rgba(255,255,255,.75)}
+#mic{display:flex;align-items:center;gap:8px;background:transparent;color:var(--slate);border:1px solid var(--line);border-radius:9999px;padding:5px 12px;font:500 13px var(--font);cursor:pointer}
+.dark #mic{color:rgba(255,255,255,.75);border-color:rgba(255,255,255,.25)}
+#mic .dot{width:10px;height:10px;border-radius:50%;background:#777}
+#mic.on .dot{background:#2ecc71;box-shadow:0 0 0 0 rgba(46,204,113,.7);animation:pulse 1.6s infinite}
+#mic.heard .dot{background:var(--blue)}
+@keyframes pulse{70%{box-shadow:0 0 0 10px rgba(46,204,113,0)}100%{box-shadow:0 0 0 0 rgba(46,204,113,0)}}
+#toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--navy);color:#fff;padding:10px 20px;border-radius:9999px;font:500 16px var(--font);transition:all .25s;z-index:20;pointer-events:none}
+#toast.show{opacity:1;transform:translateX(-50%)}
+#heard{position:fixed;left:12px;top:10px;background:rgba(0,20,45,.8);color:#fff;padding:6px 12px;border-radius:8px;font:400 13px var(--font);z-index:20;max-width:60vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:none}
+#menu,#notes{position:fixed;inset:0;background:rgba(0,20,45,.88);z-index:30;display:none;align-items:center;justify-content:center}
+#menu.open,#notes.open{display:flex}
+#menu ol{background:#fff;border-radius:12px;padding:28px 40px;list-style:none;min-width:520px;max-height:80vh;overflow:auto}
+#menu li{padding:10px 0;border-bottom:1px solid var(--line);font-size:18px;cursor:pointer;display:flex;gap:16px}
+#menu li b{color:var(--blue);width:28px}
+#menu li.cur{color:var(--blue);font-weight:600}
+#notes div{background:#fff;border-radius:12px;padding:32px 40px;max-width:900px;font-size:22px;line-height:1.5;white-space:pre-wrap}
+.help{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:rgba(0,20,45,.85);color:#fff;padding:8px 16px;border-radius:9999px;font:400 13px var(--font);z-index:20;transition:opacity .6s}
+.help.hide{opacity:0}
+aside.notes{display:none}
+.overflow{outline:4px solid var(--orange);outline-offset:-4px}
+
+/* ===================== SLIDE BUILDING BLOCKS (use these) ===================== */
+.kicker{font-size:15px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--blue);margin-bottom:14px}
+h1{font-family:var(--hero);font-weight:400;font-size:84px;line-height:1.05;color:var(--navy);letter-spacing:-.5px}
+h2{font-size:44px;font-weight:600;line-height:1.15;color:var(--navy);letter-spacing:-.6px;max-width:1350px}
+h3{font-size:26px;font-weight:600;color:var(--navy);margin-bottom:8px}
+.sub{font-size:26px;color:var(--slate);margin-top:18px;font-weight:400;max-width:1200px}
+.body{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0;margin-top:34px}
+p{line-height:1.5}
+.muted{color:var(--slate)}
+.blue{color:var(--blue)} .navy{color:var(--navy)} .orange{color:var(--orange)} .teal{color:var(--teal)}
+ul.clean{list-style:none;display:flex;flex-direction:column;gap:18px}
+ul.clean li{padding-left:34px;position:relative;line-height:1.45}
+ul.clean li::before{content:"";position:absolute;left:0;top:.5em;width:14px;height:14px;border-radius:50%;background:var(--blue)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:56px;flex:1;min-height:0;align-items:center}
+.cols.wide-right{grid-template-columns:5fr 7fr}
+.cols.wide-left{grid-template-columns:7fr 5fr}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.cols4{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+.card{background:var(--surface);border-radius:8px;padding:28px 30px;border:1px solid var(--line)}
+.callout{background:var(--fill);border-left:6px solid var(--blue);border-radius:8px;padding:22px 28px;font-size:24px;line-height:1.45;color:var(--navy)}
+.callout.warn{background:#FFF1E7;border-color:var(--orange)}
+.kpi .v{font-size:64px;font-weight:600;color:var(--navy);letter-spacing:-1.5px;line-height:1}
+.kpi .l{font-size:18px;color:var(--slate);margin-top:10px}
+.kpi .d{font-size:17px;font-weight:600;margin-top:10px}
+.kpi .d.up{color:var(--teal)} .kpi .d.down{color:var(--orange)}
+.big-number{font-size:160px;font-weight:600;color:var(--blue);letter-spacing:-5px;line-height:1}
+.chart{position:relative;width:100%;height:100%;min-height:320px}
+.pill{display:inline-block;padding:6px 16px;border-radius:9999px;background:var(--fill);color:var(--navy);font-size:15px;font-weight:600}
+.rec{display:flex;gap:22px;align-items:flex-start}
+.rec .n{flex:0 0 52px;height:52px;border-radius:50%;background:var(--blue);color:#fff;font-weight:600;font-size:24px;display:flex;align-items:center;justify-content:center}
+.rec p{font-size:20px;color:var(--slate);margin-top:4px}
+table.t{border-collapse:collapse;width:100%;font-size:19px}
+table.t th{text-align:left;color:var(--slate);font-weight:500;font-size:15px;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid var(--navy);padding:10px 14px}
+table.t td{padding:12px 14px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+table.t td.num,table.t th.num{text-align:right}
+table.t tr.hl td{background:var(--fill);font-weight:600;color:var(--navy)}
+.source{font-size:14px;color:var(--slate);margin-top:18px}
+/* Dashboards */
+.panel.dashboard{padding:44px 56px 84px}
+.panel.dashboard h2{font-size:34px}
+.dash{display:flex;flex-direction:column;gap:16px;flex:1;min-height:0;margin-top:16px}
+.dash-filters{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.dash-filter{display:flex;align-items:center;gap:8px}
+.dash-filter span{font-size:12px;color:var(--slate);text-transform:uppercase;letter-spacing:1.2px;font-weight:600}
+.dash-filter select{font:500 15px var(--font);color:var(--navy);background:var(--fill) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300244D' stroke-width='2' fill='none'/%3E%3C/svg%3E") no-repeat right 14px center;border:1px solid transparent;border-radius:9999px;padding:7px 36px 7px 16px;appearance:none;-webkit-appearance:none;cursor:pointer}
+.dash-filter select.set{background-color:var(--blue);color:#fff;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='white' stroke-width='2' fill='none'/%3E%3C/svg%3E")}
+.dash-reset{font:600 14px var(--font);color:var(--blue);background:none;border:none;cursor:pointer;margin-left:auto}
+.dash-kpis{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:16px}
+.dash-kpis .kpi{padding:18px 22px}
+.dash-kpis .kpi .v{font-size:40px}
+.dash-kpis .kpi .l{font-size:15px;margin-top:6px}
+.dash-kpis .kpi .d{font-size:13px;margin-top:6px;color:var(--slate);font-weight:500}
+.dash-charts{display:grid;gap:16px;flex:1;min-height:0;grid-template-columns:repeat(var(--cols,2),1fr);grid-auto-rows:1fr}
+.dash-chart{background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px 18px 10px;display:flex;flex-direction:column;min-height:0}
+.dash-chart h4{font-size:16px;font-weight:600;color:var(--navy);margin-bottom:4px}
+.dash-chart .chart{flex:1;min-height:0}
+.dash-empty{color:var(--slate);font-size:18px;padding:20px}
+/* Title / section slides */
+.panel.title{background:var(--navy);color:#fff;justify-content:center}
+.panel.title h1{color:#fff;font-size:96px;max-width:1300px}
+.panel.title .sub{color:rgba(255,255,255,.75)}
+.panel.title .kicker{color:var(--soft)}
+.panel.section{background:var(--fill);justify-content:center}
+.panel.section h1{font-size:88px}
+.hint-right{position:absolute;right:var(--pad);top:calc(var(--pad) + 4px);font-size:15px;color:var(--blue);font-weight:600}
+</style>
+</head>
+<body>
+<div id="viewport"><div id="stage">
+<div id="bar"></div>
+<main id="deck">
+
+<!-- ======================================================================
+  SLIDES START HERE. The Slides agent replaces everything between the markers.
+  Each <section class="slide"> = one main slide (next/back moves between these).
+  Each <div class="panel"> inside it = a side slide (right/left moves between these).
+  data-title    = name shown in the footer and used by "Jarvis, go to ___"
+  data-keywords = extra words that "go to" can match (optional)
+  <aside class="notes"> = speaker notes (press N)
+  Charts: <div class="chart"><canvas data-chart="ID"></canvas></div>, plus an entry in CHARTS below.
+====================================================================== -->
+<!-- SLIDES:BEGIN -->
+
+<section class="slide" data-title="Title" data-keywords="start beginning home">
+  <div class="panel title">
+    <div class="kicker">EXAMPLE · Director of Analytics</div>
+    <h1>One sentence that is the whole story.</h1>
+    <p class="sub">What we looked at, and the one thing we should do about it.</p>
+  </div>
+</section>
+
+<section class="slide" data-title="Summary" data-keywords="executive overview key numbers">
+  <div class="panel">
+    <div class="kicker">The short version</div>
+    <h2>Three things matter. The biggest is worth about $1.2M a year.</h2>
+    <div class="body">
+      <div class="cols4">
+        <div class="card kpi"><div class="v">48K</div><div class="l">Members in the data</div></div>
+        <div class="card kpi"><div class="v">31%</div><div class="l">Still active after 90 days</div><div class="d down">▼ 6 pts vs last year</div></div>
+        <div class="card kpi"><div class="v">2×</div><div class="l">Retention with a 7-day follow-up</div><div class="d up">▲ biggest lever</div></div>
+        <div class="card kpi"><div class="v">$1.2M</div><div class="l">Yearly value if we act</div></div>
+      </div>
+    </div>
+    <aside class="notes">Open with the $1.2M. Then walk the three findings.</aside>
+  </div>
+</section>
+
+<section class="slide" data-title="Follow-up" data-keywords="retention follow up finding one">
+  <div class="panel">
+    <div class="kicker">Finding 1</div>
+    <h2>People who get a follow-up within 7 days stay twice as often</h2>
+    <div class="body">
+      <div class="cols wide-right">
+        <div>
+          <div class="big-number">2×</div>
+          <p class="sub" style="margin-top:12px">62% vs 31% still active at 90 days</p>
+          <div class="callout" style="margin-top:28px">Only 4 in 10 members get a follow-up today.</div>
+        </div>
+        <div class="chart"><canvas data-chart="followup"></canvas></div>
+      </div>
+      <div class="source">EXAMPLE DATA · n = 4,210 members · Jan–Jun 2025</div>
+    </div>
+    <div class="hint-right">Breakdown →</div>
+  </div>
+  <div class="panel">
+    <div class="kicker">Finding 1 · breakdown</div>
+    <h2>It holds for every plan type, so it isn't just a mix effect</h2>
+    <div class="body"><div class="chart"><canvas data-chart="followup_by_plan"></canvas></div></div>
+  </div>
+  <div class="panel">
+    <div class="kicker">Finding 1 · trend</div>
+    <h2>The gap has stayed steady for six months</h2>
+    <div class="body"><div class="chart"><canvas data-chart="followup_trend"></canvas></div></div>
+  </div>
+</section>
+
+<section class="slide" data-title="Recommendations" data-keywords="actions next steps what to do plan">
+  <div class="panel">
+    <div class="kicker">What we should do</div>
+    <h2>Three moves, in order of payoff</h2>
+    <div class="body" style="gap:34px">
+      <div class="rec"><div class="n">1</div><div><h3>Automatic 7-day follow-up for everyone</h3><p>About 1,300 more members stay each year, worth about $390K.</p></div></div>
+      <div class="rec"><div class="n">2</div><div><h3>Second thing</h3><p>Why, and how big.</p></div></div>
+      <div class="rec"><div class="n">3</div><div><h3>Third thing</h3><p>Why, and how big.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-title="Dashboard" data-keywords="dashboard explore filters interactive">
+  <div class="panel dashboard">
+    <div class="kicker">Explore it yourself</div>
+    <h2>Pick a plan or a channel. Every number updates.</h2>
+    <div class="dash" data-dash="main"></div>
+    <aside class="notes">Use this when someone asks "what about just Premium?" Say: Jarvis, filter Premium. Or: Jarvis, clear filters.</aside>
+  </div>
+</section>
+
+<section class="slide" data-title="Appendix" data-keywords="method data quality caveats">
+  <div class="panel">
+    <div class="kicker">Appendix</div>
+    <h2>How we did it, and what to be careful about</h2>
+    <div class="body">
+      <table class="t">
+        <tr><th>Check</th><th>Result</th></tr>
+        <tr><td>Rows used</td><td>4,210 of 4,388 (removed test accounts)</td></tr>
+        <tr class="hl"><td>Biggest caveat</td><td>This shows a link, not proof it causes it. Next step: a test.</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDES:END -->
+</main>
+<div id="foot"><span class="logo-text">Company name</span><span class="sect" id="sect"></span><span id="more">more →</span><span id="dots"></span><span id="num"></span><button id="mic" title="Voice control (V)"><span class="dot"></span><span id="micLabel">Voice off · V</span></button></div>
+</div></div>
+
+<div id="heard"></div>
+<div id="toast"></div>
+<div id="menu"><ol id="menuList"></ol></div>
+<div id="notes"><div id="notesText"></div></div>
+<div class="help">→ ← side slides · ↓ ↑ / Space next/back · G go to · N notes · V voice · F fullscreen</div>
+
+<script>
+/* ===================== CONFIG (safe to edit) ===================== */
+window.DECK_CONFIG = {
+  wakeWord: "jarvis",
+  // Words Chrome sometimes hears instead of the wake word
+  wakeAliases: ["jarvis","jarvice","jervis","jarvas","jarviss","javis","jarvie","jarvus","jarves","jarbis","charvis","garvis"],
+  lang: "en-US",
+  showTranscript: true,       // show what the mic heard (top left). Set false for the real talk.
+  quickCommandDelayMs: 600,
+  onlyDashboard: null,        // set to a dashboard id (e.g. "main") to show only that dashboard (standalone file)   // how long to wait before acting on a short command mid-sentence
+};
+
+/* ===================== CHART DATA (Slides agent fills this) =====================
+  Same format as the analysis JSON files:
+  { chart: "bar"|"hbar"|"line"|"stacked"|"scatter", x: [...], series: [{name, values, format?: "pct"|"usd"|"num", color?}],
+    yLabel?, xLabel?, highlight?: index of the bar to make bright blue, legend?: true/false }
+*/
+const CHARTS = {
+  followup: { chart:"bar", x:["No follow-up","Follow-up in 7 days"], series:[{name:"Active at 90 days", values:[0.31,0.62], format:"pct"}], highlight:1 },
+  followup_by_plan: { chart:"bar", x:["Basic","Plus","Premium"], series:[
+      {name:"No follow-up", values:[0.27,0.33,0.38], format:"pct", color:"#A8B3BF"},
+      {name:"Follow-up", values:[0.55,0.64,0.71], format:"pct", color:"#2B8FFF"}], legend:true },
+  followup_trend: { chart:"line", x:["Jan","Feb","Mar","Apr","May","Jun"], series:[
+      {name:"Follow-up", values:[0.60,0.61,0.63,0.62,0.61,0.64], format:"pct", color:"#2B8FFF"},
+      {name:"No follow-up", values:[0.33,0.32,0.30,0.31,0.29,0.30], format:"pct", color:"#A8B3BF"}], legend:true },
+};
+/* ===================== DASHBOARD DATA (filled by: python3 FE/skills/dashboard/scripts/inject.py) ===================== */
+/* DASHBOARDS:BEGIN */
+const DASHBOARDS = {"main":{"data":[{"month":"2025-01","plan":"Basic","channel":"Search","members":184,"retained":58,"followups":74,"revenue":5336},{"month":"2025-01","plan":"Basic","channel":"Social","members":166,"retained":49,"followups":62,"revenue":4814},{"month":"2025-01","plan":"Basic","channel":"Referral","members":344,"retained":127,"followups":136,"revenue":9990},{"month":"2025-01","plan":"Plus","channel":"Search","members":203,"retained":66,"followups":72,"revenue":9947},{"month":"2025-01","plan":"Plus","channel":"Social","members":363,"retained":133,"followups":141,"revenue":17787},{"month":"2025-01","plan":"Plus","channel":"Referral","members":449,"retained":195,"followups":157,"revenue":22040},{"month":"2025-01","plan":"Premium","channel":"Search","members":334,"retained":142,"followups":143,"revenue":29726},{"month":"2025-01","plan":"Premium","channel":"Social","members":176,"retained":66,"followups":77,"revenue":15664},{"month":"2025-01","plan":"Premium","channel":"Referral","members":202,"retained":91,"followups":84,"revenue":18049},{"month":"2025-02","plan":"Basic","channel":"Search","members":375,"retained":106,"followups":145,"revenue":10875},{"month":"2025-02","plan":"Basic","channel":"Social","members":258,"retained":77,"followups":109,"revenue":7482},{"month":"2025-02","plan":"Basic","channel":"Referral","members":448,"retained":170,"followups":176,"revenue":13006},{"month":"2025-02","plan":"Plus","channel":"Search","members":209,"retained":77,"followups":80,"revenue":10241},{"month":"2025-02","plan":"Plus","channel":"Social","members":344,"retained":118,"followups":136,"revenue":16856},{"month":"2025-02","plan":"Plus","channel":"Referral","members":201,"retained":96,"followups":78,"revenue":9873},{"month":"2025-02","plan":"Premium","channel":"Search","members":386,"retained":151,"followups":159,"revenue":34354},{"month":"2025-02","plan":"Premium","channel":"Social","members":335,"retained":130,"followups":146,"revenue":29815},{"month":"2025-02","plan":"Premium","channel":"Referral","members":305,"retained":167,"followups":134,"revenue":27189},{"month":"2025-03","plan":"Basic","channel":"Search","members":278,"retained":82,"followups":123,"revenue":8062},{"month":"2025-03","plan":"Basic","channel":"Social","members":362,"retained":101,"followups":159,"revenue":10498},{"month":"2025-03","plan":"Basic","channel":"Referral","members":288,"retained":118,"followups":117,"revenue":8369},{"month":"2025-03","plan":"Plus","channel":"Search","members":366,"retained":128,"followups":162,"revenue":17934},{"month":"2025-03","plan":"Plus","channel":"Social","members":368,"retained":125,"followups":130,"revenue":18032},{"month":"2025-03","plan":"Plus","channel":"Referral","members":460,"retained":209,"followups":179,"revenue":22549},{"month":"2025-03","plan":"Premium","channel":"Search","members":243,"retained":106,"followups":98,"revenue":21627},{"month":"2025-03","plan":"Premium","channel":"Social","members":322,"retained":124,"followups":136,"revenue":28658},{"month":"2025-03","plan":"Premium","channel":"Referral","members":414,"retained":218,"followups":166,"revenue":36908},{"month":"2025-04","plan":"Basic","channel":"Search","members":283,"retained":82,"followups":122,"revenue":8207},{"month":"2025-04","plan":"Basic","channel":"Social","members":337,"retained":91,"followups":118,"revenue":9773},{"month":"2025-04","plan":"Basic","channel":"Referral","members":429,"retained":166,"followups":186,"revenue":12441},{"month":"2025-04","plan":"Plus","channel":"Search","members":298,"retained":100,"followups":116,"revenue":14602},{"month":"2025-04","plan":"Plus","channel":"Social","members":278,"retained":90,"followups":103,"revenue":13622},{"month":"2025-04","plan":"Plus","channel":"Referral","members":261,"retained":123,"followups":105,"revenue":12803},{"month":"2025-04","plan":"Premium","channel":"Search","members":209,"retained":85,"followups":81,"revenue":18601},{"month":"2025-04","plan":"Premium","channel":"Social","members":366,"retained":152,"followups":149,"revenue":32574},{"month":"2025-04","plan":"Premium","channel":"Referral","members":283,"retained":144,"followups":117,"revenue":25222},{"month":"2025-05","plan":"Basic","channel":"Search","members":336,"retained":106,"followups":117,"revenue":9744},{"month":"2025-05","plan":"Basic","channel":"Social","members":360,"retained":117,"followups":160,"revenue":10440},{"month":"2025-05","plan":"Basic","channel":"Referral","members":365,"retained":139,"followups":157,"revenue":10593},{"month":"2025-05","plan":"Plus","channel":"Search","members":293,"retained":114,"followups":108,"revenue":14357},{"month":"2025-05","plan":"Plus","channel":"Social","members":273,"retained":99,"followups":119,"revenue":13377},{"month":"2025-05","plan":"Plus","channel":"Referral","members":261,"retained":112,"followups":116,"revenue":12803},{"month":"2025-05","plan":"Premium","channel":"Search","members":358,"retained":145,"followups":138,"revenue":31862},{"month":"2025-05","plan":"Premium","channel":"Social","members":287,"retained":127,"followups":115,"revenue":25543},{"month":"2025-05","plan":"Premium","channel":"Referral","members":304,"retained":137,"followups":120,"revenue":27073},{"month":"2025-06","plan":"Basic","channel":"Search","members":208,"retained":63,"followups":86,"revenue":6032},{"month":"2025-06","plan":"Basic","channel":"Social","members":196,"retained":62,"followups":85,"revenue":5684},{"month":"2025-06","plan":"Basic","channel":"Referral","members":460,"retained":189,"followups":200,"revenue":13345},{"month":"2025-06","plan":"Plus","channel":"Search","members":158,"retained":58,"followups":68,"revenue":7742},{"month":"2025-06","plan":"Plus","channel":"Social","members":171,"retained":60,"followups":74,"revenue":8379},{"month":"2025-06","plan":"Plus","channel":"Referral","members":445,"retained":186,"followups":189,"revenue":21849},{"month":"2025-06","plan":"Premium","channel":"Search","members":178,"retained":70,"followups":76,"revenue":15842},{"month":"2025-06","plan":"Premium","channel":"Social","members":224,"retained":87,"followups":79,"revenue":19936},{"month":"2025-06","plan":"Premium","channel":"Referral","members":370,"retained":191,"followups":164,"revenue":32974}],"filters":[{"field":"plan","label":"Plan"},{"field":"channel","label":"Channel"},{"field":"month","label":"Months","type":"range"}],"kpis":[{"label":"Members","expr":"sum(members)","format":"num"},{"label":"Still active at 90 days","expr":"sum(retained)/sum(members)","format":"pct"},{"label":"Got a follow-up","expr":"sum(followups)/sum(members)","format":"pct"},{"label":"Revenue","expr":"sum(revenue)","format":"usd"}],"charts":[{"title":"New members by month","chart":"line","by":"month","metrics":[{"name":"Members","expr":"sum(members)","format":"num"}]},{"title":"90-day retention by channel","chart":"bar","by":"channel","metrics":[{"name":"Retention","expr":"sum(retained)/sum(members)","format":"pct"}],"sort":"desc","highlight":"max"},{"title":"Revenue by plan","chart":"hbar","by":"plan","metrics":[{"name":"Revenue","expr":"sum(revenue)","format":"usd"}],"sort":"desc"}]}};
+/* DASHBOARDS:END */
+/* SLIDE-DATA:END */
+
+/* ===================== ENGINE (do not edit) ===================== */
+(function(){
+const C = window.DECK_CONFIG;
+const stage = document.getElementById('stage');
+const slides = [...document.querySelectorAll('#deck > .slide')];
+let s = 0, p = 0;
+
+// Standalone dashboard mode: ?dash=<id> or DECK_CONFIG.onlyDashboard
+const onlyDash = new URLSearchParams(location.search).get('dash') || C.onlyDashboard;
+if (onlyDash) {
+  const keep = document.querySelector(`.dash[data-dash="${onlyDash}"]`)?.closest('.panel');
+  if (keep) { slides.forEach(sl => { if (!sl.contains(keep)) sl.remove(); else sl.querySelectorAll(':scope > .panel').forEach(pn => pn !== keep && pn.remove()); }); slides.splice(0, slides.length, keep.closest('.slide')); }
+}
+
+// Wrap panels in a sliding track
+slides.forEach(sl => {
+  const track = document.createElement('div'); track.className = 'track';
+  [...sl.querySelectorAll(':scope > .panel')].forEach(pn => track.appendChild(pn));
+  sl.prepend(track);
+});
+const panels = i => slides[i].querySelectorAll('.panel');
+
+// Scale 1600x900 stage to fit the window
+function fit(){
+  const k = Math.min(innerWidth/1600, innerHeight/900) * 0.98;
+  stage.style.transform = `scale(${k})`;
+}
+addEventListener('resize', fit); fit();
+
+// Shrink text on any panel that overflows (keeps everything on the page)
+function autofit(){
+  document.querySelectorAll('.panel').forEach(pn => {
+    const kids = [...pn.children].filter(c => !c.classList.contains('notes') && !c.classList.contains('hint-right'));
+    let z = 1;
+    while (pn.scrollHeight > pn.clientHeight + 2 && z > 0.7){ z -= 0.04; kids.forEach(c => c.style.zoom = z); }
+    const over = pn.scrollHeight > pn.clientHeight + 2;
+    pn.classList.toggle('overflow', over && location.search.includes('check'));
+    if (over || z < 1) console.warn(`Slide "${pn.closest('.slide').dataset.title}" ${over ? 'still overflows' : 'was shrunk to ' + Math.round(z*100) + '%'}: cut content`);
+  });
+}
+
+function show(ns, np, why){
+  ns = Math.max(0, Math.min(slides.length-1, ns));
+  const n = panels(ns).length; np = Math.max(0, Math.min(n-1, np));
+  slides.forEach((sl,i) => { sl.classList.toggle('active', i===ns); sl.classList.toggle('before', i<ns); });
+  slides[ns].querySelector('.track').style.transform = `translateX(${-np*1600}px)`;
+  s = ns; p = np;
+  const dark = panels(s)[p].classList.contains('title');
+  stage.classList.toggle('dark', dark);
+  document.getElementById('bar').style.width = ((s+1)/slides.length*100)+'%';
+  document.getElementById('sect').textContent = slides[s].dataset.title || '';
+  document.getElementById('num').textContent = `${s+1} / ${slides.length}`;
+  const dots = document.getElementById('dots'); dots.innerHTML = '';
+  if (n > 1) for (let i=0;i<n;i++){ const d=document.createElement('i'); if(i===p) d.className='on'; dots.appendChild(d); }
+  document.getElementById('more').style.display = (n>1 && p<n-1) ? 'inline' : 'none';
+  history.replaceState(null,'',`#${s+1}.${p+1}`);
+  const nt = panels(s)[p].querySelector('.notes') || slides[s].querySelector('.notes');
+  document.getElementById('notesText').textContent = nt ? nt.textContent.trim() : '(no notes)';
+  if (why) toast(why);
+}
+const next  = () => show(s+1, 0, '▼ Next');
+const prev  = () => show(s-1, 0, '▲ Back');
+const right = () => p < panels(s).length-1 ? show(s, p+1, '→ More') : next();
+const left  = () => p > 0 ? show(s, p-1, '← Back out') : prev();
+const home  = () => show(0, 0, 'Start');
+const end   = () => show(slides.length-1, 0, 'End');
+
+let tt; function toast(t){ const el=document.getElementById('toast'); el.textContent=t; el.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>el.classList.remove('show'),1100); }
+
+// Menu (G)
+function buildMenu(){
+  const ol = document.getElementById('menuList'); ol.innerHTML='';
+  slides.forEach((sl,i)=>{ const li=document.createElement('li'); li.innerHTML=`<b>${i+1}</b>${sl.dataset.title||'Slide '+(i+1)}`; if(i===s) li.className='cur';
+    li.onclick=()=>{ show(i,0); toggle('menu',false); }; ol.appendChild(li); });
+}
+function toggle(id, force){ const el=document.getElementById(id); const open = force ?? !el.classList.contains('open'); if(id==='menu') buildMenu(); el.classList.toggle('open', open); }
+
+addEventListener('keydown', e => {
+  const k = e.key;
+  if (e.target.closest && e.target.closest('select,input,textarea')) { if (k==='Escape') e.target.blur(); return; }
+  if (['ArrowDown','PageDown',' ','Enter'].includes(k)) { e.preventDefault(); next(); }
+  else if (['ArrowUp','PageUp','Backspace'].includes(k)) { e.preventDefault(); prev(); }
+  else if (k==='ArrowRight') right();
+  else if (k==='ArrowLeft') left();
+  else if (k==='Home') home(); else if (k==='End') end();
+  else if (k==='g'||k==='G') toggle('menu');
+  else if (k==='n'||k==='N') toggle('notes');
+  else if (k==='v'||k==='V') voice.toggle();
+  else if (k==='f'||k==='F') (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen());
+  else if (k==='Escape') { toggle('menu',false); toggle('notes',false); }
+  else if (/^[1-9]$/.test(k)) show(+k-1, 0);
+});
+document.getElementById('menu').onclick = e => { if (e.target.id==='menu') toggle('menu',false); };
+document.getElementById('notes').onclick = () => toggle('notes',false);
+
+/* ---------- Voice parser (pure function, tested in tests/test_voice.js) ---------- */
+/* VOICE-PARSER:BEGIN */
+function parseVoice(raw, index, dash){
+  // raw: words said after the wake word. index: [{title, hay:[words]}] per main slide.
+  // dash (optional): filters on the current slide [{field, label, values:[...]}].
+  // Returns {act: next|prev|right|left|home|end|goto|notes|menu|close|fullscreen|voiceoff|filter, n?, label} or null.
+  const NUMW = {one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,eleven:11,twelve:12,thirteen:13,fourteen:14,fifteen:15,sixteen:16,seventeen:17,eighteen:18,nineteen:19,twenty:20,
+    first:1,second:2,third:3,fourth:4,fifth:5,sixth:6,seventh:7,eighth:8,ninth:9,tenth:10,eleventh:11,twelfth:12};
+  const STOP = new Set('a an the to go back slide slides section page please show me us take jump skip bring up pull open return head over on of and our that this part about where we talked let lets see now can you i want to into is it for number one next previous'.split(' '));
+  let t = ' ' + String(raw).toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ') + ' ';
+  t = t.replace(/\b(\d+)(st|nd|rd|th)\b/g,'$1');
+  for (const w in NUMW) t = t.replace(new RegExp('\\b'+w+'\\b','g'), String(NUMW[w]));
+  t = t.replace(/\s+/g,' ');
+  if (!t.trim()) return null;
+  const has = re => re.test(t);
+  const words = x => x.split(' ').filter(w => w && !STOP.has(w));
+  function fuzzy(q){
+    const qw = words(q); if (!qw.length) return null;
+    let best = -1, bestScore = 0;
+    index.forEach((sl,i) => {
+      let sc = 0;
+      qw.forEach(w => { if (sl.hay.includes(w)) sc += 2; else if (w.length > 3 && sl.hay.some(h => h.length > 3 && (h.startsWith(w.slice(0,4)) || w.startsWith(h.slice(0,4))))) sc += 1; });
+      if (sc > bestScore) { bestScore = sc; best = i; }
+    });
+    return bestScore >= 2 ? { act:'goto', n:best, label:'→ ' + index[best].title } : null;
+  }
+  // 1. Screen controls
+  if (has(/\b(stop listening|voice off|mute)\b/)) return { act:'voiceoff', label:'Voice off' };
+  if (has(/\b(notes)\b/)) return { act:'notes', label:'Notes' };
+  if (has(/\b(hide|close)\b/)) return { act:'close', label:'Close' };
+  if (has(/\b(menu|overview|agenda)\b/)) return { act:'menu', label:'Menu' };
+  if (has(/\bfull ?screen\b/)) return { act:'fullscreen', label:'Fullscreen' };
+  // 1b. Dashboard filters (only on a dashboard slide): "filter premium", "just search", "clear filters"
+  if (dash && dash.length) {
+    if (has(/\b(clear|reset|remove)( all)?( the)? filters?\b|\bshow (me )?(all|everything)\b|\bno filters?\b|\bclear all\b/)) return { act:'filter', clear:true, label:'Filters cleared' };
+    const norm = v => ' ' + String(v).toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim() + ' ';
+    let hit = null;
+    for (const f of dash) for (const v of f.values) { const nv = norm(v); if (nv.trim().length >= 3 && t.includes(nv) && (!hit || nv.length > hit.len)) hit = { field:f.field, value:v, label:`${f.label}: ${v}`, len:nv.length }; }
+    if (hit) return { act:'filter', field:hit.field, value:hit.value, label:hit.label };
+  }
+  // 2. Slide by number: "slide 3", "third slide", "the first slide", "number 4"
+  let m = t.match(/\bslide (?:number )?(\d+)\b/) || t.match(/\b(\d+) slide\b/) || t.match(/\bnumber (\d+)\b/);
+  if (m) { const n = +m[1]; if (n >= 1 && n <= index.length) return { act:'goto', n:n-1, label:'→ Slide ' + n }; }
+  // 3. Start / end
+  if (has(/\b(beginning|start over|the start|title slide|home|very top|from the top)\b/) || /^ start $/.test(t)) return { act:'home', label:'Start' };
+  if (has(/\b(last|final) slide\b|\bthe end\b|^ end $/)) return { act:'end', label:'End' };
+  // 4. "go to X", "go back to X", "show me X", "take me to X"
+  m = t.match(/\b(?:go back to|back to|go to|jump to|skip to|take me to|take us to|show me|show us|bring up|pull up|open|return to|head to|lets see|let s see|go over to|move to)\b(.*)$/);
+  if (m && m[1].trim()) { const g = fuzzy(m[1]); if (g) return g; }
+  // 5. Side slides (checked before "back" so "back out" isn't read as "back")
+  if (has(/\b(back out|go left|to the left|swipe left|left|zoom out|main slide|previous panel)\b/)) return { act:'left', label:'← Back out' };
+  if (has(/\b(more|dig in|dig deeper|deeper|drill|details?|breakdown|break it down|break down|expand|go right|to the right|swipe right|right|next panel)\b/)) return { act:'right', label:'→ More' };
+  // 6. Next / back
+  if (has(/\b(back|previous|prior|last one|go back|one before|before that)\b/)) return { act:'prev', label:'▲ Back' };
+  if (has(/\b(next|forward|continue|advance|move on|keep going|onward|proceed)\b/)) return { act:'next', label:'▼ Next' };
+  // 7. Just a name: "recommendations"
+  return fuzzy(t);
+}
+/* VOICE-PARSER:END */
+
+const slideIndex = slides.map(sl => {
+  const txt = [sl.dataset.title, sl.dataset.keywords, sl.querySelector('.kicker')?.textContent].join(' ').toLowerCase().replace(/[^a-z0-9 ]/g,' ');
+  return { title: sl.dataset.title || '', hay: txt.split(/\s+/).filter(Boolean) };
+});
+
+function act(c){
+  switch (c.act){
+    case 'next': return next(); case 'prev': return prev(); case 'right': return right(); case 'left': return left();
+    case 'home': return home(); case 'end': return end();
+    case 'goto': return show(c.n, 0, c.label);
+    case 'notes': return toggle('notes'); case 'menu': return toggle('menu');
+    case 'close': toggle('notes',false); return toggle('menu',false);
+    case 'fullscreen': return document.documentElement.requestFullscreen?.();
+    case 'voiceoff': return voice.toggle();
+    case 'filter': { const el = currentDash(); if (el) { c.clear ? dashClear(el.dataset.dash) : dashSet(el.dataset.dash, c.field, c.value); toast(c.label); } return; }
+  }
+}
+
+/* ---------- Voice listener ---------- */
+const voice = (() => {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const btn = document.getElementById('mic'), label = document.getElementById('micLabel'), heard = document.getElementById('heard');
+  let rec = null, on = false, handled = {}, timer = null, sessionId = 0;
+  const wakeRe = new RegExp('\\b(' + C.wakeAliases.concat([C.wakeWord]).join('|') + ')\\b[\\s,.!?]*', 'gi');
+  const setUI = () => { btn.classList.toggle('on', on); label.textContent = on ? `Say “${C.wakeWord[0].toUpperCase()+C.wakeWord.slice(1)} …”` : 'Voice off · V'; heard.style.display = on && C.showTranscript ? 'block' : 'none'; };
+
+  function fire(key, c){
+    if (handled[key]) return;
+    handled[key] = true; clearTimeout(timer);
+    act(c);
+    btn.classList.add('heard'); setTimeout(()=>btn.classList.remove('heard'), 600);
+  }
+  function handle(text, idx, isFinal){
+    const parts = text.toLowerCase().split(wakeRe);
+    if (parts.length < 3) { heard.textContent = '🎙 ' + text; return; }   // no wake word: ignore
+    const cmd = parts[parts.length-1].trim();
+    const key = idx + ':' + (parts.length-1);
+    const c = parseVoice(cmd, slideIndex, currentDashOptions());
+    heard.textContent = `🎙 “${text.trim()}”  ${c ? c.label : (isFinal ? '· didn’t catch a command' : '…')}`;
+    if (!c || handled[key]) return;
+    if (isFinal) return fire(key, c);
+    // Mid-sentence: only act early on short, simple commands ("next", "back"), after a short pause.
+    // Longer phrases ("go back to the first slide") wait for the finished sentence.
+    clearTimeout(timer);
+    if (['next','prev','right','left'].includes(c.act) && cmd.split(/\s+/).length <= 2)
+      timer = setTimeout(() => fire(key, c), C.quickCommandDelayMs);
+  }
+  function start(){
+    if (!SR) { toast('Voice needs Chrome'); on = false; setUI(); return; }
+    rec = new SR(); rec.continuous = true; rec.interimResults = true; rec.lang = C.lang; rec.maxAlternatives = 1;
+    rec.onresult = e => { for (let i=e.resultIndex; i<e.results.length; i++){ const r=e.results[i]; handle(r[0].transcript, sessionId + '-' + i, r.isFinal); } };
+    rec.onerror = e => { if (e.error==='not-allowed' || e.error==='service-not-allowed'){ on=false; setUI(); toast('Mic blocked. Allow it in the address bar.'); } };
+    rec.onend = () => { if (on) { sessionId++; handled = {}; try { rec.start(); } catch(_){} } };
+    try { rec.start(); } catch(_){}
+  }
+  btn.onclick = () => { toggle(); btn.blur(); };
+  function toggle(){ on = !on; setUI(); if (on) start(); else if (rec) { rec.onend=null; rec.stop(); } toast(on ? 'Voice on' : 'Voice off'); }
+  setUI();
+  return { toggle };
+})();
+
+/* ---------- Charts ---------- */
+function fmt(v, f){ if (v==null || (typeof v==='number' && isNaN(v))) return '–'; if (v===0) return f==='usd' ? '$0' : f==='pct' ? '0%' : '0'; if (f==='pct') { const x = Math.round(v*1000)/10; return (Math.abs(x) < 10 && x !== Math.round(x) ? x.toFixed(1) : Math.round(x)) + '%'; } if (f==='usd') return '$'+(Math.abs(v)>=1e6?(v/1e6).toFixed(1)+'M':Math.abs(v)>=1e3?(v/1e3).toFixed(0)+'K':v.toFixed(0)); if (Math.abs(v)>=1e6) return (v/1e6).toFixed(1)+'M'; if (Math.abs(v)>=1e4) return (v/1e3).toFixed(1)+'K'; return (+v).toLocaleString(undefined,{maximumFractionDigits:Math.abs(v)<10?2:0}); }
+const PALETTE = ['#2B8FFF','#00244D','#9DC9FF','#359797','#F97316','#A8B3BF'];
+function makeChart(cv, spec, small){
+  const kind = spec.chart || 'bar', horiz = kind==='hbar', stacked = kind==='stacked';
+  const f = spec.series[0]?.format;
+  const fs = small ? 13 : 17;
+  const datasets = spec.series.map((sr,i) => {
+    const color = sr.color || (spec.series.length===1 ? PALETTE[0] : PALETTE[i % PALETTE.length]);
+    let bg = color;
+    if (spec.highlight!=null && spec.series.length===1) bg = spec.x.map((_,j)=> j===spec.highlight ? '#2B8FFF' : '#A8B3BF');
+    return kind==='line'
+      ? { label: sr.name, data: sr.values, borderColor: color, backgroundColor: color, borderWidth: small?3:4, pointRadius: small?3:5, tension: .3 }
+      : kind==='scatter'
+      ? { label: sr.name, data: sr.values, backgroundColor: color + 'AA', pointRadius: 6 }
+      : { label: sr.name, data: sr.values, backgroundColor: bg, borderRadius: 6, maxBarThickness: 110 };
+  });
+  const valAxis = { beginAtZero: true, grid: { color: '#E1E6EC' }, border:{display:false}, ticks: { callback: v => fmt(v, f), font:{size:fs-2} }, stacked, title: { display: !!spec.yLabel, text: spec.yLabel } };
+  const catAxis = { grid: { display: false }, border:{color:'#E1E6EC'}, stacked, title: { display: !!spec.xLabel, text: spec.xLabel }, ticks:{font:{size:fs,weight:'500'}, color:'#252528', autoSkip:true, maxRotation:0} };
+  return new Chart(cv, {
+    type: kind==='line' ? 'line' : kind==='scatter' ? 'scatter' : 'bar',
+    data: { labels: spec.x, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: { duration: 400 },
+      indexAxis: horiz ? 'y' : 'x',
+      layout: { padding: { top: small ? 18 : 30, right: horiz ? 50 : 20 } },
+      plugins: {
+        legend: { display: spec.legend ?? spec.series.length > 1, position: 'top', align: 'end', labels: { usePointStyle: true, boxWidth: 8, padding: small?10:20, font:{size:fs-2} } },
+        tooltip: { callbacks: { label: c => `${c.dataset.label}: ${fmt(c.raw?.y ?? c.raw, f)}` } },
+      },
+      scales: horiz ? { x: valAxis, y: catAxis } : { x: catAxis, y: valAxis },
+    },
+    plugins: [{ id: 'labels', afterDatasetsDraw(ch){ if (kind==='line' || kind==='scatter' || stacked || spec.labels===false) return; if (small && spec.x.length > 12) return; const ctx=ch.ctx; ctx.save(); ctx.font=`600 ${small?13:18}px Poppins, sans-serif`; ctx.fillStyle='#00244D'; ctx.textAlign= horiz?'left':'center';
+      ch.data.datasets.forEach((ds,di)=>{ const meta=ch.getDatasetMeta(di); if (meta.hidden) return; meta.data.forEach((el,j)=>{ const v=ds.data[j]; horiz ? ctx.fillText(fmt(v,f), el.x+6, el.y+5) : ctx.fillText(fmt(v,f), el.x, el.y-8); }); }); ctx.restore(); } }],
+  });
+}
+function buildCharts(){
+  if (!window.Chart) { document.querySelectorAll('canvas[data-chart]').forEach(c=>c.outerHTML='<p class="muted">Chart library did not load (no internet?).</p>'); return; }
+  Chart.defaults.font.family = "'Poppins', system-ui, sans-serif"; Chart.defaults.font.size = 17; Chart.defaults.color = '#5C6370';
+  document.querySelectorAll('canvas[data-chart]').forEach(cv => {
+    const spec = CHARTS[cv.dataset.chart]; if (!spec) { console.warn('No chart data for', cv.dataset.chart); return; }
+    makeChart(cv, spec, false);
+  });
+}
+
+/* ---------- Dashboards ---------- */
+// Spec (see FE/skills/dashboard/SKILL.md):
+// { data:[{...rows}], filters:[{field,label,type?:"select"|"range"}], kpis:[{label,expr,format}], charts:[{title,chart,by,metrics:[{name,expr,format,color?}],sort?,top?,highlight?}] }
+// expr: sum(f) avg(f) min(f) max(f) count() distinct(f), combined with + - * / ( ), e.g. "sum(retained)/sum(members)"
+const DS = {};   // live state per dashboard id
+function aggExpr(rows, expr){
+  const js = String(expr).replace(/(sum|avg|min|max|count|distinct)\(\s*([\w.]*)\s*\)/g, (_, fn, fld) => {
+    const vals = fld ? rows.map(r => r[fld]).filter(v => v!=null && v!=='') : rows;
+    let v;
+    if (fn==='count') v = vals.length;
+    else if (fn==='distinct') v = new Set(vals).size;
+    else { const nums = vals.map(Number).filter(x => !isNaN(x)); const tot = nums.reduce((x,y)=>x+y,0);
+      v = !nums.length ? NaN : fn==='sum' ? tot : fn==='avg' ? tot/nums.length : fn==='min' ? Math.min(...nums) : Math.max(...nums); }
+    return '(' + v + ')';
+  });
+  if (!/^[\d\s.+\-*/()eNaInfity]*$/.test(js)) { console.warn('Bad dashboard expression:', expr); return null; }
+  try { const r = Function('return ' + js)(); return isFinite(r) ? r : null; } catch(_) { return null; }
+}
+const uniq = (rows, f) => [...new Set(rows.map(r => r[f]).filter(v => v!=null && v!==''))].sort((a,b) => (typeof a==='number' && typeof b==='number') ? a-b : String(a).localeCompare(String(b), undefined, {numeric:true}));
+function dashRows(id){
+  const st = DS[id], spec = DASHBOARDS[id];
+  return spec.data.filter(r => spec.filters.every(f => {
+    const v = st.sel[f.field];
+    if (f.type === 'range') { const [lo, hi] = v || []; const x = String(r[f.field]); return (!lo || x >= lo) && (!hi || x <= hi); }
+    return v == null || v === '' || String(r[f.field]) === String(v);
+  }));
+}
+function buildDashboards(){
+  document.querySelectorAll('.dash[data-dash]').forEach(el => {
+    const id = el.dataset.dash, spec = DASHBOARDS[id];
+    if (!spec) { el.innerHTML = `<div class="dash-empty">No data yet for dashboard “${id}”. Run inject.py.</div>`; return; }
+    DS[id] = { sel: {}, charts: [], el };
+    const fl = document.createElement('div'); fl.className = 'dash-filters';
+    spec.filters.forEach(f => {
+      const vals = uniq(spec.data, f.field);
+      const mk = (ph) => { const sel = document.createElement('select'); sel.innerHTML = `<option value="">${ph}</option>` + vals.map(v => `<option>${v}</option>`).join(''); return sel; };
+      const wrap = document.createElement('label'); wrap.className = 'dash-filter'; wrap.innerHTML = `<span>${f.label}</span>`;
+      if (f.type === 'range') {
+        const a = mk('From'), b = mk('To');
+        const on = () => { DS[id].sel[f.field] = [a.value, b.value]; a.classList.toggle('set', !!a.value); b.classList.toggle('set', !!b.value); dashUpdate(id); a.blur(); b.blur(); };
+        a.onchange = on; b.onchange = on; wrap.append(a, b);
+      } else {
+        const sel = mk('All'); sel.dataset.field = f.field;
+        sel.onchange = () => { DS[id].sel[f.field] = sel.value; sel.classList.toggle('set', !!sel.value); dashUpdate(id); sel.blur(); };
+        wrap.append(sel);
+      }
+      fl.append(wrap);
+    });
+    const rb = document.createElement('button'); rb.className = 'dash-reset'; rb.textContent = 'Clear filters'; rb.onclick = () => { dashClear(id); rb.blur(); }; fl.append(rb);
+    const kp = document.createElement('div'); kp.className = 'dash-kpis';
+    kp.innerHTML = spec.kpis.map(k => `<div class="card kpi"><div class="v">–</div><div class="l">${k.label}</div><div class="d"></div></div>`).join('');
+    const ch = document.createElement('div'); ch.className = 'dash-charts';
+    const n = spec.charts.length; ch.style.setProperty('--cols', n <= 2 ? n : n === 3 ? 3 : 2);
+    ch.innerHTML = spec.charts.map((c,i) => `<div class="dash-chart"><h4>${c.title}</h4><div class="chart" style="min-height:0"><canvas data-dchart="${i}"></canvas></div></div>`).join('');
+    el.append(fl, kp, ch);
+  });
+}
+function dashChartSpec(rows, c){
+  let xs = uniq(rows, c.by);
+  const series = c.metrics.map(m => ({ name: m.name, format: m.format, color: m.color, values: xs.map(x => aggExpr(rows.filter(r => String(r[c.by]) === String(x)), m.expr)) }));
+  if (c.sort === 'desc' || c.sort === 'asc') {
+    const order = xs.map((x,i) => i).sort((i,j) => (c.sort==='desc' ? -1 : 1) * ((series[0].values[i] ?? -Infinity) - (series[0].values[j] ?? -Infinity)));
+    xs = order.map(i => xs[i]); series.forEach(sr => sr.values = order.map(i => sr.values[i]));
+  }
+  if (c.top) { xs = xs.slice(0, c.top); series.forEach(sr => sr.values = sr.values.slice(0, c.top)); }
+  let highlight = null;
+  if (c.highlight === 'max' || c.highlight === 'min') { const v = series[0].values; const t = c.highlight==='max' ? Math.max(...v.filter(x=>x!=null)) : Math.min(...v.filter(x=>x!=null)); highlight = v.indexOf(t); }
+  else if (c.highlight != null) highlight = xs.map(String).indexOf(String(c.highlight));
+  return { chart: c.chart || 'bar', x: xs, series, highlight: highlight >= 0 ? highlight : null, legend: c.metrics.length > 1, yLabel: c.yLabel, xLabel: c.xLabel };
+}
+function dashUpdate(id){
+  const st = DS[id], spec = DASHBOARDS[id]; if (!st) return;
+  const rows = dashRows(id), filtered = Object.values(st.sel).some(v => Array.isArray(v) ? v.some(Boolean) : v);
+  st.el.querySelectorAll('.dash-kpis .kpi').forEach((k,i) => {
+    const K = spec.kpis[i];
+    k.querySelector('.v').textContent = fmt(aggExpr(rows, K.expr), K.format);
+    k.querySelector('.d').textContent = filtered ? `All: ${fmt(aggExpr(spec.data, K.expr), K.format)}` : '';
+  });
+  if (!window.Chart) return;
+  st.el.querySelectorAll('canvas[data-dchart]').forEach(cv => {
+    const i = +cv.dataset.dchart;
+    st.charts[i]?.destroy();
+    st.charts[i] = makeChart(cv, dashChartSpec(rows, spec.charts[i]), true);
+  });
+}
+function dashSet(id, field, value){
+  const st = DS[id]; if (!st) return;
+  st.sel[field] = value;
+  const sel = st.el.querySelector(`select[data-field="${field}"]`); if (sel) { sel.value = value; sel.classList.add('set'); }
+  dashUpdate(id);
+}
+function dashClear(id){
+  const st = DS[id]; if (!st) return;
+  st.sel = {}; st.el.querySelectorAll('select').forEach(sel => { sel.value = ''; sel.classList.remove('set'); });
+  dashUpdate(id);
+}
+function currentDash(){ return panels(s)[p]?.querySelector('.dash[data-dash]'); }
+function currentDashOptions(){
+  const el = currentDash(); if (!el || !DASHBOARDS[el.dataset.dash]) return null;
+  const spec = DASHBOARDS[el.dataset.dash];
+  return spec.filters.filter(f => f.type !== 'range').map(f => ({ field: f.field, label: f.label, values: uniq(spec.data, f.field) }));
+}
+
+// Start
+setTimeout(()=>document.querySelector('.help').classList.add('hide'), 5000);
+const h = location.hash.match(/#(\d+)(?:\.(\d+))?/);
+show(h ? +h[1]-1 : 0, h && h[2] ? +h[2]-1 : 0);
+buildDashboards();
+(document.fonts?.ready || Promise.resolve()).then(() => { autofit(); buildCharts(); Object.keys(DS).forEach(dashUpdate); });
+})();
+</script>
+</body>
+</html>

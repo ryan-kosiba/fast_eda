@@ -1,0 +1,7 @@
+{
+  "name": "fast-eda",
+  "owner": { "name": "Ryan Kosiba" },
+  "plugins": [
+    { "name": "fast-eda", "source": "./", "description": "Dataset → checked findings → clean voice-controlled deck." }
+  ]
+}

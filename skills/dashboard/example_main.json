@@ -1,0 +1,569 @@
+{
+ "id": "main",
+ "data": [
+  {
+   "month": "2025-01",
+   "plan": "Basic",
+   "channel": "Search",
+   "members": 184,
+   "retained": 58,
+   "followups": 74,
+   "revenue": 5336
+  },
+  {
+   "month": "2025-01",
+   "plan": "Basic",
+   "channel": "Social",
+   "members": 166,
+   "retained": 49,
+   "followups": 62,
+   "revenue": 4814
+  },
+  {
+   "month": "2025-01",
+   "plan": "Basic",
+   "channel": "Referral",
+   "members": 344,
+   "retained": 127,
+   "followups": 136,
+   "revenue": 9990
+  },
+  {
+   "month": "2025-01",
+   "plan": "Plus",
+   "channel": "Search",
+   "members": 203,
+   "retained": 66,
+   "followups": 72,
+   "revenue": 9947
+  },
+  {
+   "month": "2025-01",
+   "plan": "Plus",
+   "channel": "Social",
+   "members": 363,
+   "retained": 133,
+   "followups": 141,
+   "revenue": 17787
+  },
+  {
+   "month": "2025-01",
+   "plan": "Plus",
+   "channel": "Referral",
+   "members": 449,
+   "retained": 195,
+   "followups": 157,
+   "revenue": 22040
+  },
+  {
+   "month": "2025-01",
+   "plan": "Premium",
+   "channel": "Search",
+   "members": 334,
+   "retained": 142,
+   "followups": 143,
+   "revenue": 29726
+  },
+  {
+   "month": "2025-01",
+   "plan": "Premium",
+   "channel": "Social",
+   "members": 176,
+   "retained": 66,
+   "followups": 77,
+   "revenue": 15664
+  },
+  {
+   "month": "2025-01",
+   "plan": "Premium",
+   "channel": "Referral",
+   "members": 202,
+   "retained": 91,
+   "followups": 84,
+   "revenue": 18049
+  },
+  {
+   "month": "2025-02",
+   "plan": "Basic",
+   "channel": "Search",
+   "members": 375,
+   "retained": 106,
+   "followups": 145,
+   "revenue": 10875
+  },
+  {
+   "month": "2025-02",
+   "plan": "Basic",
+   "channel": "Social",
+   "members": 258,
+   "retained": 77,
+   "followups": 109,
+   "revenue": 7482
+  },
+  {
+   "month": "2025-02",
+   "plan": "Basic",
+   "channel": "Referral",
+   "members": 448,
+   "retained": 170,
+   "followups": 176,
+   "revenue": 13006
+  },
+  {
+   "month": "2025-02",
+   "plan": "Plus",
+   "channel": "Search",
+   "members": 209,
+   "retained": 77,
+   "followups": 80,
+   "revenue": 10241
+  },
+  {
+   "month": "2025-02",
+   "plan": "Plus",
+   "channel": "Social",
+   "members": 344,
+   "retained": 118,
+   "followups": 136,
+   "revenue": 16856
+  },
+  {
+   "month": "2025-02",
+   "plan": "Plus",
+   "channel": "Referral",
+   "members": 201,
+   "retained": 96,
+   "followups": 78,
+   "revenue": 9873
+  },
+  {
+   "month": "2025-02",
+   "plan": "Premium",
+   "channel": "Search",
+   "members": 386,
+   "retained": 151,
+   "followups": 159,
+   "revenue": 34354
+  },
+  {
+   "month": "2025-02",
+   "plan": "Premium",
+   "channel": "Social",
+   "members": 335,
+   "retained": 130,
+   "followups": 146,
+   "revenue": 29815
+  },
+  {
+   "month": "2025-02",
+   "plan": "Premium",
+   "channel": "Referral",
+   "members": 305,
+   "retained": 167,
+   "followups": 134,
+   "revenue": 27189
+  },
+  {
+   "month": "2025-03",
+   "plan": "Basic",
+   "channel": "Search",
+   "members": 278,
+   "retained": 82,
+   "followups": 123,
+   "revenue": 8062
+  },
+  {
+   "month": "2025-03",
+   "plan": "Basic",
+   "channel": "Social",
+   "members": 362,
+   "retained": 101,
+   "followups": 159,
+   "revenue": 10498
+  },
+  {
+   "month": "2025-03",
+   "plan": "Basic",
+   "channel": "Referral",
+   "members": 288,
+   "retained": 118,
+   "followups": 117,
+   "revenue": 8369
+  },
+  {
+   "month": "2025-03",
+   "plan": "Plus",
+   "channel": "Search",
+   "members": 366,
+   "retained": 128,
+   "followups": 162,
+   "revenue": 17934
+  },
+  {
+   "month": "2025-03",
+   "plan": "Plus",
+   "channel": "Social",
+   "members": 368,
+   "retained": 125,
+   "followups": 130,
+   "revenue": 18032
+  },
+  {
+   "month": "2025-03",
+   "plan": "Plus",
+   "channel": "Referral",
+   "members": 460,
+   "retained": 209,
+   "followups": 179,
+   "revenue": 22549
+  },
+  {
+   "month": "2025-03",
+   "plan": "Premium",
+   "channel": "Search",
+   "members": 243,
+   "retained": 106,
+   "followups": 98,
+   "revenue": 21627
+  },
+  {
+   "month": "2025-03",
+   "plan": "Premium",
+   "channel": "Social",
+   "members": 322,
+   "retained": 124,
+   "followups": 136,
+   "revenue": 28658
+  },
+  {
+   "month": "2025-03",
+   "plan": "Premium",
+   "channel": "Referral",
+   "members": 414,
+   "retained": 218,
+   "followups": 166,
+   "revenue": 36908
+  },
+  {
+   "month": "2025-04",
+   "plan": "Basic",
+   "channel": "Search",
+   "members": 283,
+   "retained": 82,
+   "followups": 122,
+   "revenue": 8207
+  },
+  {
+   "month": "2025-04",
+   "plan": "Basic",
+   "channel": "Social",
+   "members": 337,
+   "retained": 91,
+   "followups": 118,
+   "revenue": 9773
+  },
+  {
+   "month": "2025-04",
+   "plan": "Basic",
+   "channel": "Referral",
+   "members": 429,
+   "retained": 166,
+   "followups": 186,
+   "revenue": 12441
+  },
+  {
+   "month": "2025-04",
+   "plan": "Plus",
+   "channel": "Search",
+   "members": 298,
+   "retained": 100,
+   "followups": 116,
+   "revenue": 14602
+  },
+  {
+   "month": "2025-04",
+   "plan": "Plus",
+   "channel": "Social",
+   "members": 278,
+   "retained": 90,
+   "followups": 103,
+   "revenue": 13622
+  },
+  {
+   "month": "2025-04",
+   "plan": "Plus",
+   "channel": "Referral",
+   "members": 261,
+   "retained": 123,
+   "followups": 105,
+   "revenue": 12803
+  },
+  {
+   "month": "2025-04",
+   "plan": "Premium",
+   "channel": "Search",
+   "members": 209,
+   "retained": 85,
+   "followups": 81,
+   "revenue": 18601
+  },
+  {
+   "month": "2025-04",
+   "plan": "Premium",
+   "channel": "Social",
+   "members": 366,
+   "retained": 152,
+   "followups": 149,
+   "revenue": 32574
+  },
+  {
+   "month": "2025-04",
+   "plan": "Premium",
+   "channel": "Referral",
+   "members": 283,
+   "retained": 144,
+   "followups": 117,
+   "revenue": 25222
+  },
+  {
+   "month": "2025-05",
+   "plan": "Basic",
+   "channel": "Search",
+   "members": 336,
+   "retained": 106,
+   "followups": 117,
+   "revenue": 9744
+  },
+  {
+   "month": "2025-05",
+   "plan": "Basic",
+   "channel": "Social",
+   "members": 360,
+   "retained": 117,
+   "followups": 160,
+   "revenue": 10440
+  },
+  {
+   "month": "2025-05",
+   "plan": "Basic",
+   "channel": "Referral",
+   "members": 365,
+   "retained": 139,
+   "followups": 157,
+   "revenue": 10593
+  },
+  {
+   "month": "2025-05",
+   "plan": "Plus",
+   "channel": "Search",
+   "members": 293,
+   "retained": 114,
+   "followups": 108,
+   "revenue": 14357
+  },
+  {
+   "month": "2025-05",
+   "plan": "Plus",
+   "channel": "Social",
+   "members": 273,
+   "retained": 99,
+   "followups": 119,
+   "revenue": 13377
+  },
+  {
+   "month": "2025-05",
+   "plan": "Plus",
+   "channel": "Referral",
+   "members": 261,
+   "retained": 112,
+   "followups": 116,
+   "revenue": 12803
+  },
+  {
+   "month": "2025-05",
+   "plan": "Premium",
+   "channel": "Search",
+   "members": 358,
+   "retained": 145,
+   "followups": 138,
+   "revenue": 31862
+  },
+  {
+   "month": "2025-05",
+   "plan": "Premium",
+   "channel": "Social",
+   "members": 287,
+   "retained": 127,
+   "followups": 115,
+   "revenue": 25543
+  },
+  {
+   "month": "2025-05",
+   "plan": "Premium",
+   "channel": "Referral",
+   "members": 304,
+   "retained": 137,
+   "followups": 120,
+   "revenue": 27073
+  },
+  {
+   "month": "2025-06",
+   "plan": "Basic",
+   "channel": "Search",
+   "members": 208,
+   "retained": 63,
+   "followups": 86,
+   "revenue": 6032
+  },
+  {
+   "month": "2025-06",
+   "plan": "Basic",
+   "channel": "Social",
+   "members": 196,
+   "retained": 62,
+   "followups": 85,
+   "revenue": 5684
+  },
+  {
+   "month": "2025-06",
+   "plan": "Basic",
+   "channel": "Referral",
+   "members": 460,
+   "retained": 189,
+   "followups": 200,
+   "revenue": 13345
+  },
+  {
+   "month": "2025-06",
+   "plan": "Plus",
+   "channel": "Search",
+   "members": 158,
+   "retained": 58,
+   "followups": 68,
+   "revenue": 7742
+  },
+  {
+   "month": "2025-06",
+   "plan": "Plus",
+   "channel": "Social",
+   "members": 171,
+   "retained": 60,
+   "followups": 74,
+   "revenue": 8379
+  },
+  {
+   "month": "2025-06",
+   "plan": "Plus",
+   "channel": "Referral",
+   "members": 445,
+   "retained": 186,
+   "followups": 189,
+   "revenue": 21849
+  },
+  {
+   "month": "2025-06",
+   "plan": "Premium",
+   "channel": "Search",
+   "members": 178,
+   "retained": 70,
+   "followups": 76,
+   "revenue": 15842
+  },
+  {
+   "month": "2025-06",
+   "plan": "Premium",
+   "channel": "Social",
+   "members": 224,
+   "retained": 87,
+   "followups": 79,
+   "revenue": 19936
+  },
+  {
+   "month": "2025-06",
+   "plan": "Premium",
+   "channel": "Referral",
+   "members": 370,
+   "retained": 191,
+   "followups": 164,
+   "revenue": 32974
+  }
+ ],
+ "filters": [
+  {
+   "field": "plan",
+   "label": "Plan"
+  },
+  {
+   "field": "channel",
+   "label": "Channel"
+  },
+  {
+   "field": "month",
+   "label": "Months",
+   "type": "range"
+  }
+ ],
+ "kpis": [
+  {
+   "label": "Members",
+   "expr": "sum(members)",
+   "format": "num"
+  },
+  {
+   "label": "Still active at 90 days",
+   "expr": "sum(retained)/sum(members)",
+   "format": "pct"
+  },
+  {
+   "label": "Got a follow-up",
+   "expr": "sum(followups)/sum(members)",
+   "format": "pct"
+  },
+  {
+   "label": "Revenue",
+   "expr": "sum(revenue)",
+   "format": "usd"
+  }
+ ],
+ "charts": [
+  {
+   "title": "New members by month",
+   "chart": "line",
+   "by": "month",
+   "metrics": [
+    {
+     "name": "Members",
+     "expr": "sum(members)",
+     "format": "num"
+    }
+   ]
+  },
+  {
+   "title": "90-day retention by channel",
+   "chart": "bar",
+   "by": "channel",
+   "metrics": [
+    {
+     "name": "Retention",
+     "expr": "sum(retained)/sum(members)",
+     "format": "pct"
+    }
+   ],
+   "sort": "desc",
+   "highlight": "max"
+  },
+  {
+   "title": "Revenue by plan",
+   "chart": "hbar",
+   "by": "plan",
+   "metrics": [
+    {
+     "name": "Revenue",
+     "expr": "sum(revenue)",
+     "format": "usd"
+    }
+   ],
+   "sort": "desc"
+  }
+ ]
+}
