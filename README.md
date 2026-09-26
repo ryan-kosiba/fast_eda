@@ -6,7 +6,7 @@ A team of Claude Code agents that turns a dataset into **checked findings** and 
 
 > Clone https://github.com/ryan-kosiba/fast_eda into ./fast_eda, then read fast_eda/START.md and follow it.
 
-That's it. The Manager takes over, asks you 2-3 quick questions, and runs the team.
+That's it. The Manager explains the data first, talks through options with you, then runs the team.
 
 Plugin install (optional): `/plugin marketplace add ryan-kosiba/fast_eda`, then `/plugin install fast-eda@fast-eda`, then `/fast-eda:fast-eda`.
 
@@ -28,12 +28,14 @@ The **communication-style** skill keeps every message to you short and plain.
 
 ```
  0-3   Setup           install.sh → brain/ + output/
- 3-15  Look + ask      EDA agent  ‖  Manager asks you the business goal
-15-25  Plan            Business agent → you pick the questions
-25-60  Dig             Analysis agents ‖ ‖  → brain/03_findings.md
+ 3-8   Data tour       Manager explains the data in plain words (EDA agent runs deep checks in background)
+ 8-20  Talk it through You and the Manager discuss what's worth digging into, and agree the goal
+20-25  Plan            Business agent → questions to test → you confirm
+25-55  Dig             Analysis agents ‖ ‖  → brain/03_findings.md
 ~50    Dashboard brief Manager asks you: what question, which numbers, which filters
-60-80  Build + check   Slides ‖ Dashboard ‖ Fact Checker → output/deck.html
-80-90  Land it         serve deck, 5-line talk track
+55-70  Story session   Story built from the findings; you approve it + confirm you understand it (no slides before this)
+70-84  Build + check   Slides ‖ Dashboard ‖ Fact Checker → output/deck.html
+84-90  Land it         serve deck, 5-line talk track
 ```
 
 ## The deck
@@ -41,7 +43,8 @@ The **communication-style** skill keeps every message to you short and plain.
 - ↓/↑ = main slides. →/← = side slides with breakdowns.
 - **Voice (Chrome):** press **V**, then say "Jarvis next", "Jarvis back", "Jarvis more", "Jarvis go to recommendations", or "Jarvis slide 3".
 - **Dashboards** inside the deck: filters, stat tiles and charts update together. "Jarvis, filter Premium" or "Jarvis, clear filters".
-- G = menu, N = speaker notes, F = fullscreen.
+- **Zoom:** click a chart, or say "Jarvis, zoom in on the retention chart". Then "Jarvis, zoom out".
+- G = menu, N = speaker notes, Z = zoom, F = fullscreen.
 - Demo: `open skills/slide-deck/template/deck.html`
 
 ## Files

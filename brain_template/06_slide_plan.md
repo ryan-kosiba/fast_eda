@@ -1,2 +1,0 @@
-# Slide plan
-(Slides agent)

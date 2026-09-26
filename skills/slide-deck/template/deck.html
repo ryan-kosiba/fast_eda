@@ -47,6 +47,14 @@ html,body{height:100%;background:#0b1a33;overflow:hidden;font-family:var(--font)
 #toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--navy);color:#fff;padding:10px 20px;border-radius:9999px;font:500 16px var(--font);transition:all .25s;z-index:20;pointer-events:none}
 #toast.show{opacity:1;transform:translateX(-50%)}
 #heard{position:fixed;left:12px;top:10px;background:rgba(0,20,45,.8);color:#fff;padding:6px 12px;border-radius:8px;font:400 13px var(--font);z-index:20;max-width:60vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:none}
+#zoom{position:absolute;inset:0;background:#fff;z-index:8;padding:56px 72px 90px;display:none;flex-direction:column}
+#zoom.open{display:flex}
+#zoom h2{font-size:38px}
+.zoom-note{font-size:17px;color:var(--slate);margin:8px 0 12px}
+#zoom .chart{flex:1;min-height:0}
+.zoom-hint{position:absolute;right:72px;top:62px;font-size:14px;color:var(--blue);font-weight:600}
+.chart canvas{cursor:zoom-in}
+#zoom .chart canvas{cursor:default}
 #menu,#notes{position:fixed;inset:0;background:rgba(0,20,45,.88);z-index:30;display:none;align-items:center;justify-content:center}
 #menu.open,#notes.open{display:flex}
 #menu ol{background:#fff;border-radius:12px;padding:28px 40px;list-style:none;min-width:520px;max-height:80vh;overflow:auto}
@@ -121,6 +129,10 @@ table.t tr.hl td{background:var(--fill);font-weight:600;color:var(--navy)}
 .panel.title h1{color:#fff;font-size:96px;max-width:1300px}
 .panel.title .sub{color:rgba(255,255,255,.75)}
 .panel.title .kicker{color:var(--soft)}
+.title-meta{display:flex;gap:64px;margin-top:64px;padding-top:28px;border-top:1px solid rgba(255,255,255,.2);font-size:21px;color:#fff;max-width:1400px}
+.title-meta > div{flex:0 0 auto}
+.title-meta > div.grow{flex:1}
+.title-meta span{display:block;font-size:13px;letter-spacing:1.6px;text-transform:uppercase;color:var(--soft);font-weight:600;margin-bottom:8px}
 .panel.section{background:var(--fill);justify-content:center}
 .panel.section h1{font-size:88px}
 .hint-right{position:absolute;right:var(--pad);top:calc(var(--pad) + 4px);font-size:15px;color:var(--blue);font-weight:600}
@@ -147,6 +159,24 @@ table.t tr.hl td{background:var(--fill);font-weight:600;color:var(--navy)}
     <div class="kicker">EXAMPLE · Director of Analytics</div>
     <h1>One sentence that is the whole story.</h1>
     <p class="sub">What we looked at, and the one thing we should do about it.</p>
+    <div class="title-meta">
+      <div><span>Date</span>September 26, 2026</div>
+      <div><span>Presented by</span>Ryan Kosiba</div>
+      <div class="grow"><span>Attendees</span>Name (Role) · Name (Role) · Name (Role)</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-title="Agenda" data-keywords="agenda plan outline what we will cover">
+  <div class="panel">
+    <div class="kicker">What I'll cover</div>
+    <h2>We're losing new members early, and there's a cheap fix</h2>
+    <div class="body" style="gap:40px">
+      <div class="rec"><div class="n">1</div><div><h3>The problem: half of new members leave in 90 days</h3></div></div>
+      <div class="rec"><div class="n">2</div><div><h3>The cause: no follow-up in the first week</h3></div></div>
+      <div class="rec"><div class="n">3</div><div><h3>The fix: automatic follow-ups, worth about $1.2M</h3></div></div>
+    </div>
+    <aside class="notes">Tell them what you'll say. One breath per point.</aside>
   </div>
 </section>
 
@@ -232,6 +262,7 @@ table.t tr.hl td{background:var(--fill);font-weight:600;color:var(--navy)}
 
 <!-- SLIDES:END -->
 </main>
+<div id="zoom"><h2 id="zoomTitle"></h2><div class="zoom-note" id="zoomNote"></div><div class="chart"><canvas id="zoomCanvas"></canvas></div><div class="zoom-hint">Esc or “Jarvis, zoom out”</div></div>
 <div id="foot"><span class="logo-text">Company name</span><span class="sect" id="sect"></span><span id="more">more →</span><span id="dots"></span><span id="num"></span><button id="mic" title="Voice control (V)"><span class="dot"></span><span id="micLabel">Voice off · V</span></button></div>
 </div></div>
 
@@ -315,6 +346,7 @@ function autofit(){
 }
 
 function show(ns, np, why){
+  if (typeof unzoom === 'function' && document.getElementById('zoom').classList.contains('open')) unzoom();
   ns = Math.max(0, Math.min(slides.length-1, ns));
   const n = panels(ns).length; np = Math.max(0, Math.min(n-1, np));
   slides.forEach((sl,i) => { sl.classList.toggle('active', i===ns); sl.classList.toggle('before', i<ns); });
@@ -362,7 +394,8 @@ addEventListener('keydown', e => {
   else if (k==='n'||k==='N') toggle('notes');
   else if (k==='v'||k==='V') voice.toggle();
   else if (k==='f'||k==='F') (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen());
-  else if (k==='Escape') { toggle('menu',false); toggle('notes',false); }
+  else if (k==='Escape') { toggle('menu',false); toggle('notes',false); unzoom(); }
+  else if (k==='z'||k==='Z') (zoomOpen() ? unzoom() : zoomChart(0));
   else if (/^[1-9]$/.test(k)) show(+k-1, 0);
 });
 document.getElementById('menu').onclick = e => { if (e.target.id==='menu') toggle('menu',false); };
@@ -370,10 +403,12 @@ document.getElementById('notes').onclick = () => toggle('notes',false);
 
 /* ---------- Voice parser (pure function, tested in tests/test_voice.js) ---------- */
 /* VOICE-PARSER:BEGIN */
-function parseVoice(raw, index, dash){
+function parseVoice(raw, index, ctx){
   // raw: words said after the wake word. index: [{title, hay:[words]}] per main slide.
-  // dash (optional): filters on the current slide [{field, label, values:[...]}].
-  // Returns {act: next|prev|right|left|home|end|goto|notes|menu|close|fullscreen|voiceoff|filter, n?, label} or null.
+  // ctx (optional): what's on screen now: { filters: [{field, label, values}], charts: [chart titles], zoomed: bool }
+  // Returns {act: next|prev|right|left|home|end|goto|notes|menu|close|fullscreen|voiceoff|filter|zoom|unzoom, n?, label} or null.
+  ctx = Array.isArray(ctx) ? { filters: ctx } : (ctx || {});
+  const dash = ctx.filters;
   const NUMW = {one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,eleven:11,twelve:12,thirteen:13,fourteen:14,fifteen:15,sixteen:16,seventeen:17,eighteen:18,nineteen:19,twenty:20,
     first:1,second:2,third:3,fourth:4,fifth:5,sixth:6,seventh:7,eighth:8,ninth:9,tenth:10,eleventh:11,twelfth:12};
   const STOP = new Set('a an the to go back slide slides section page please show me us take jump skip bring up pull open return head over on of and our that this part about where we talked let lets see now can you i want to into is it for number one next previous'.split(' '));
@@ -393,6 +428,22 @@ function parseVoice(raw, index, dash){
       if (sc > bestScore) { bestScore = sc; best = i; }
     });
     return bestScore >= 2 ? { act:'goto', n:best, label:'→ ' + index[best].title } : null;
+  }
+  // 0. Chart zoom: "zoom in on the retention chart", "make chart 2 bigger", "zoom out"
+  if (ctx.zoomed && has(/\b(zoom out|close|shrink|smaller|exit|done|go back|back|unzoom|normal size)\b/)) return { act:'unzoom', label:'Zoom out' };
+  if (ctx.charts && ctx.charts.length && !has(/\bzoom out\b/) && has(/\b(zoom|enlarge|bigger|blow up|expand|focus on|close up|closer look)\b/)) {
+    let n = 0;
+    const m2 = t.match(/\bchart (\d+)\b|\b(\d+) chart\b|\bgraph (\d+)\b|\b(\d+) graph\b/);
+    if (m2) n = Math.min(ctx.charts.length, +(m2[1]||m2[2]||m2[3]||m2[4])) - 1;
+    else {
+      const qw = words(t).filter(w => !/^(zoom|in|enlarge|bigger|blow|expand|focus|chart|graph|close|closer|look|make|at|up)$/.test(w));
+      let bs = 0;
+      ctx.charts.forEach((title,i) => { const hw = String(title).toLowerCase().replace(/[^a-z0-9 ]/g,' ').split(/\s+/); let sc = 0;
+        qw.forEach(w => { if (hw.includes(w)) sc += 2; else if (w.length > 3 && hw.some(h => h.length > 3 && (h.startsWith(w.slice(0,4)) || w.startsWith(h.slice(0,4))))) sc += 1; });
+        if (sc > bs) { bs = sc; n = i; } });
+    }
+    n = Math.max(0, n);
+    return { act:'zoom', n, label:'🔍 ' + ctx.charts[n] };
   }
   // 1. Screen controls
   if (has(/\b(stop listening|voice off|mute)\b/)) return { act:'voiceoff', label:'Voice off' };
@@ -442,6 +493,8 @@ function act(c){
     case 'close': toggle('notes',false); return toggle('menu',false);
     case 'fullscreen': return document.documentElement.requestFullscreen?.();
     case 'voiceoff': return voice.toggle();
+    case 'zoom': return zoomChart(c.n);
+    case 'unzoom': return unzoom();
     case 'filter': { const el = currentDash(); if (el) { c.clear ? dashClear(el.dataset.dash) : dashSet(el.dataset.dash, c.field, c.value); toast(c.label); } return; }
   }
 }
@@ -465,7 +518,7 @@ const voice = (() => {
     if (parts.length < 3) { heard.textContent = '🎙 ' + text; return; }   // no wake word: ignore
     const cmd = parts[parts.length-1].trim();
     const key = idx + ':' + (parts.length-1);
-    const c = parseVoice(cmd, slideIndex, currentDashOptions());
+    const c = parseVoice(cmd, slideIndex, { filters: currentDashOptions(), charts: currentCharts().map(x => x.title), zoomed: zoomOpen() });
     heard.textContent = `🎙 “${text.trim()}”  ${c ? c.label : (isFinal ? '· didn’t catch a command' : '…')}`;
     if (!c || handled[key]) return;
     if (isFinal) return fire(key, c);
@@ -636,6 +689,38 @@ function currentDashOptions(){
   const spec = DASHBOARDS[el.dataset.dash];
   return spec.filters.filter(f => f.type !== 'range').map(f => ({ field: f.field, label: f.label, values: uniq(spec.data, f.field) }));
 }
+
+/* ---------- Chart zoom ---------- */
+let zoomChartObj = null;
+function currentCharts(){
+  const pn = panels(s)[p]; if (!pn) return [];
+  const out = [];
+  pn.querySelectorAll('canvas[data-chart], canvas[data-dchart]').forEach(cv => {
+    if (cv.dataset.chart) {
+      const spec = CHARTS[cv.dataset.chart]; if (!spec) return;
+      out.push({ cv, title: spec.title || pn.querySelector('h2')?.textContent || cv.dataset.chart, note: spec.note || '', spec });
+    } else {
+      const el = cv.closest('.dash'), id = el.dataset.dash, c = DASHBOARDS[id]?.charts[+cv.dataset.dchart]; if (!c) return;
+      const sel = Object.entries(DS[id]?.sel || {}).filter(([,v]) => Array.isArray(v) ? v.some(Boolean) : v).map(([k,v]) => `${k}: ${Array.isArray(v) ? v.filter(Boolean).join('–') : v}`);
+      out.push({ cv, title: c.title, note: sel.length ? 'Filtered · ' + sel.join(' · ') : 'All data', spec: dashChartSpec(dashRows(id), c) });
+    }
+  });
+  return out;
+}
+const zoomOpen = () => document.getElementById('zoom').classList.contains('open');
+function zoomChart(n){
+  const list = currentCharts(); const c = list[n]; if (!c || !window.Chart) return;
+  document.getElementById('zoomTitle').textContent = c.title;
+  document.getElementById('zoomNote').textContent = c.note;
+  document.getElementById('zoom').classList.add('open');
+  zoomChartObj?.destroy();
+  zoomChartObj = makeChart(document.getElementById('zoomCanvas'), c.spec, false);
+}
+function unzoom(){ zoomChartObj?.destroy(); zoomChartObj = null; document.getElementById('zoom').classList.remove('open'); }
+document.getElementById('deck').addEventListener('click', e => {
+  const cv = e.target.closest('canvas[data-chart], canvas[data-dchart]'); if (!cv) return;
+  const i = currentCharts().findIndex(x => x.cv === cv); if (i >= 0) zoomChart(i);
+});
 
 // Start
 setTimeout(()=>document.querySelector('.help').classList.add('hide'), 5000);

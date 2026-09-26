@@ -44,6 +44,19 @@ for (const [say, want] of dashCases) {
   const ok = got === want; if (!ok) fail++;
   console.log(`${ok ? 'PASS' : 'FAIL'}  [dashboard] "${say}" → ${got}${ok ? '' : '   (want ' + want + ')'}`);
 }
-const total = cases.length + dashCases.length;
+const ctx = { filters: dash, charts: ['New members by month', '90-day retention by channel', 'Revenue by plan'], zoomed: false };
+const zoomCases = [
+  ['zoom in on the retention chart', false, 'zoom:1'], ['zoom in on revenue', false, 'zoom:2'], ['make chart 3 bigger', false, 'zoom:2'],
+  ['zoom in on the second chart', false, 'zoom:1'], ['zoom in', false, 'zoom:0'], ['focus on new members', false, 'zoom:0'],
+  ['zoom out', true, 'unzoom'], ['close that', true, 'unzoom'], ['go back', true, 'unzoom'],
+  ['zoom out', false, 'left'], ['next', false, 'next'], ['filter premium', false, 'filter:plan=Premium'],
+];
+for (const [say, zoomed, want] of zoomCases) {
+  const r = parseVoice(say, index, { ...ctx, zoomed });
+  const got = !r ? 'null' : r.act === 'zoom' ? 'zoom:' + r.n : r.act === 'filter' ? `filter:${r.field}=${r.value}` : r.act;
+  const ok = got === want; if (!ok) fail++;
+  console.log(`${ok ? 'PASS' : 'FAIL'}  [zoom${zoomed ? ', zoomed' : ''}] "${say}" → ${got}${ok ? '' : '   (want ' + want + ')'}`);
+}
+const total = cases.length + dashCases.length + zoomCases.length;
 console.log(`\n${total - fail}/${total} passed`);
 process.exit(fail ? 1 : 0);

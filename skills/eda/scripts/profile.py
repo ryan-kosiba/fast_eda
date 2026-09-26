@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Fast data profiler for fast_eda.
 
-Usage: python3 profile.py <data_dir_or_files...> [--out output/eda]
+Usage: python3 profile.py <data_dir_or_files...> [--out output/eda] [--sample 200000]
+
+--sample N reads only the first N rows of each file (fast first look). Row counts are still exact for CSVs.
 
 Writes:
   <out>/profile.json   machine-readable profile of every table
@@ -36,12 +38,12 @@ def find_files(paths):
     return files
 
 
-def load(path):
+def load(path, sample=None):
     ext = path.suffix.lower()
     if ext in {".csv", ".txt"}:
-        return {path.stem: pd.read_csv(path, low_memory=False)}
+        return {path.stem: pd.read_csv(path, low_memory=False, nrows=sample)}
     if ext == ".tsv":
-        return {path.stem: pd.read_csv(path, sep="\t", low_memory=False)}
+        return {path.stem: pd.read_csv(path, sep="\t", low_memory=False, nrows=sample)}
     if ext in {".xlsx", ".xls"}:
         sheets = pd.read_excel(path, sheet_name=None)
         return {f"{path.stem}:{k}" if len(sheets) > 1 else path.stem: v for k, v in sheets.items()}
@@ -96,7 +98,13 @@ def fnum(x):
     return x
 
 
-def profile_table(name, df):
+def count_rows(path):
+    """Exact row count for text files without loading them."""
+    with open(path, "rb") as fh:
+        return max(sum(buf.count(b"\n") for buf in iter(lambda: fh.read(1 << 24), b"")) - 1, 0)
+
+
+def profile_table(name, df, total_rows=None):
     n = len(df)
     for c in df.columns:
         d = try_dates(df[c])
@@ -140,7 +148,8 @@ def profile_table(name, df):
     key_candidates = [c["name"] for c in cols if c["unique"] == n and c["missing_pct"] == 0 and n > 0]
     return {
         "table": name,
-        "rows": n,
+        "rows": total_rows or n,
+        "rows_profiled": n,
         "columns": len(df.columns),
         "duplicate_rows": dup_rows,
         "key_candidates": key_candidates,
@@ -213,6 +222,9 @@ def join_candidates(tables):
 
 def to_markdown(profiles, joins):
     L = ["# Data profile (auto)", ""]
+    if any(p.get("rows_profiled") != p["rows"] for p in profiles):
+        L.append("_Sampled: stats below come from the first rows of each file; row counts are exact._")
+        L.append("")
     L.append("| Table | Rows | Cols | Dup rows | Key |")
     L.append("|---|---|---|---|---|")
     for p in profiles:
@@ -257,18 +269,23 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("paths", nargs="*", default=["."])
     ap.add_argument("--out", default="output/eda")
+    ap.add_argument("--sample", type=int, default=None, help="only read the first N rows of each file")
     a = ap.parse_args()
 
     files = find_files(a.paths)
     if not files:
         sys.exit("No data files found.")
-    tables = {}
+    tables, totals = {}, {}
     for f in files:
         try:
-            tables.update(load(f))
+            loaded = load(f, a.sample)
+            tables.update(loaded)
+            if a.sample and f.suffix.lower() in {".csv", ".tsv", ".txt"}:
+                for k in loaded:
+                    totals[k] = count_rows(f)
         except Exception as e:  # keep going; report the bad file
             print(f"!! could not read {f}: {e}", file=sys.stderr)
-    profiles = [profile_table(k, v) for k, v in tables.items()]
+    profiles = [profile_table(k, v, totals.get(k)) for k, v in tables.items()]
     joins = join_candidates(tables)
 
     out = Path(a.out)

@@ -8,7 +8,7 @@ description: How to talk to the human during a fast_eda run. Ultra short, plain 
 The human is moving fast. They will not read paragraphs.
 
 ## Rules
-- **Short.** At most 5 lines, unless they asked for more. Bullets, not paragraphs.
+- **Short.** At most 5 lines, unless they asked for more. Bullets, not paragraphs. (Exceptions: the data tour and the story review can run to about 15 lines, still in bullets.)
 - **Lead with the answer.** First line = the point. Then the why, only if it's needed.
 - **Plain words.** Explain it like you're talking to a 5-year-old who's smart.
   - Say "people who stopped coming back", not "churned cohort".
@@ -17,7 +17,9 @@ The human is moving fast. They will not read paragraphs.
 - **No acronyms.** Write the words out. (Allowed only if the data itself uses them, like a column name. Explain once.)
 - **One number per point**, rounded: "about 1 in 3", "up 20%", "$1.2M".
 - **No tech talk.** Don't mention dataframes, joins, scripts, dtypes or errors unless the human has to act on them.
-- **Questions to the human** use `AskUserQuestion`: 2-4 options, best one first and marked "(Recommended)". Never ask more than you need.
+- **Open topics** (what to explore, what the story should be): talk in plain text. Lay out the options briefly, then ask an open question ("What jumps out at you?"). Don't force a menu.
+- **Clear, closed choices** (keep these 3 questions? Which audience?): use `AskUserQuestion`, with 2-4 options and the best one first, marked "(Recommended)".
+- **Never open with a question.** Show what you found first, then ask.
 - **Status updates** look like this:
 
 ```
