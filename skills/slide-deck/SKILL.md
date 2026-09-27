@@ -12,7 +12,7 @@ The Manager and the human write the story (the `storyline` skill). **No HTML unt
 
 1. **Title.** The big message, date, presenter, attendees.
 2. **Agenda.** "Tell them what you'll say": the 3 main points, numbered.
-3. **Context.** What the business looks like now (one chart).
+3. **Background (1-2 slides).** Where things stand today: headline stat tiles + the trend over time (the `Background` block in findings, B1…). The main mix goes in a side panel. The title is a takeaway that sets up the problem.
 4-7. **One finding per main slide.** The title is the takeaway sentence, not a topic ("Follow-ups double retention", not "Follow-up analysis"). Breakdowns, splits and "does it hold for every group" go in **side panels to the right**.
 8. **Recommendations.** 3 moves, ranked, each with its size (the value to the company).
 9. **Summary + the ask.** "Tell them what you told them": the 3 points again in one line each, then the ask. It's the last main slide.
@@ -49,7 +49,7 @@ Each finding slide = one message, one chart, one callout. At most about 40 words
 | Dashboard slide | `<div class="panel dashboard">` + `<div class="dash" data-dash="main"></div>`. The data comes from the Dashboard agent via `FE/skills/dashboard/scripts/inject.py`. Keep the `DASHBOARDS:BEGIN/END` markers |
 | Speaker notes | `<aside class="notes">what to say</aside>` (N key) |
 
-Chart spec: `{chart:"bar"|"hbar"|"line"|"stacked"|"scatter", x:[...], series:[{name, values, format:"pct"|"usd"|"num", color?}], highlight?: index, legend?: bool, yLabel?, xLabel?}`. Percentages are stored as decimals (0.31).
+Chart spec: `{chart:"bar"|"hbar"|"line"|"stacked"|"scatter", x:[...], series:[{name, values, format:"pct"|"usd"|"num", color?}], highlight?: index, legend?: bool, yLabel?, xLabel?}`. Percentages are stored as decimals (0.31). Line charts zoom the axis to the data (so changes are visible), and bar charts always start at 0. Force either one with `zero: true/false`.
 
 ### Design rules
 - **Keep it simple.** One idea per slide. Clean charts, the brand colors, lots of white space. No clutter, no extra transitions (the engine's subtle fade is enough), no clip art.

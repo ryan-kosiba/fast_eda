@@ -180,19 +180,26 @@ table.t tr.hl td{background:var(--fill);font-weight:600;color:var(--navy)}
   </div>
 </section>
 
-<section class="slide" data-title="Summary" data-keywords="executive overview key numbers">
+<section class="slide" data-title="Background" data-keywords="background where things stand today trend key numbers overview">
   <div class="panel">
-    <div class="kicker">The short version</div>
-    <h2>Three things matter. The biggest is worth about $1.2M a year.</h2>
-    <div class="body">
+    <div class="kicker">Where things stand today</div>
+    <h2>Members grew 18% this year, but fewer are sticking around</h2>
+    <div class="body" style="gap:28px">
       <div class="cols4">
-        <div class="card kpi"><div class="v">48K</div><div class="l">Members in the data</div></div>
-        <div class="card kpi"><div class="v">31%</div><div class="l">Still active after 90 days</div><div class="d down">▼ 6 pts vs last year</div></div>
-        <div class="card kpi"><div class="v">2×</div><div class="l">Retention with a 7-day follow-up</div><div class="d up">▲ biggest lever</div></div>
-        <div class="card kpi"><div class="v">$1.2M</div><div class="l">Yearly value if we act</div></div>
+        <div class="card kpi"><div class="v">48K</div><div class="l">Members</div><div class="d up">▲ 18% since Jan</div></div>
+        <div class="card kpi"><div class="v">31%</div><div class="l">Still active after 90 days</div><div class="d down">▼ 6 pts since Jan</div></div>
+        <div class="card kpi"><div class="v">2.4</div><div class="l">Visits per member</div></div>
+        <div class="card kpi"><div class="v">$4.1M</div><div class="l">Revenue, Jan–Jun</div></div>
       </div>
+      <div class="chart" style="flex:1;min-height:0"><canvas data-chart="bg_trend"></canvas></div>
     </div>
-    <aside class="notes">Open with the $1.2M. Then walk the three findings.</aside>
+    <div class="hint-right">The mix →</div>
+    <aside class="notes">Set the scene: growth looks good, but retention is slipping. That's the problem the rest of the talk solves.</aside>
+  </div>
+  <div class="panel">
+    <div class="kicker">Background · the mix</div>
+    <h2>Basic plans are now 6 in 10 new members, up from 4 in 10</h2>
+    <div class="body"><div class="chart"><canvas data-chart="bg_mix"></canvas></div></div>
   </div>
 </section>
 
@@ -290,6 +297,12 @@ window.DECK_CONFIG = {
     yLabel?, xLabel?, highlight?: index of the bar to make bright blue, legend?: true/false }
 */
 const CHARTS = {
+  bg_trend: { title:"90-day retention by month", chart:"line", x:["Jan","Feb","Mar","Apr","May","Jun"], series:[
+      {name:"Still active at 90 days", values:[0.37,0.36,0.34,0.33,0.32,0.31], format:"pct", color:"#2B8FFF"}], legend:true },
+  bg_mix: { title:"New members by plan", chart:"stacked", x:["Jan","Feb","Mar","Apr","May","Jun"], series:[
+      {name:"Basic", values:[0.41,0.45,0.50,0.54,0.57,0.60], format:"pct", color:"#2B8FFF"},
+      {name:"Plus", values:[0.36,0.34,0.31,0.29,0.27,0.25], format:"pct", color:"#9DC9FF"},
+      {name:"Premium", values:[0.23,0.21,0.19,0.17,0.16,0.15], format:"pct", color:"#00244D"}], legend:true },
   followup: { chart:"bar", x:["No follow-up","Follow-up in 7 days"], series:[{name:"Active at 90 days", values:[0.31,0.62], format:"pct"}], highlight:1 },
   followup_by_plan: { chart:"bar", x:["Basic","Plus","Premium"], series:[
       {name:"No follow-up", values:[0.27,0.33,0.38], format:"pct", color:"#A8B3BF"},
@@ -559,7 +572,7 @@ function makeChart(cv, spec, small){
       ? { label: sr.name, data: sr.values, backgroundColor: color + 'AA', pointRadius: 6 }
       : { label: sr.name, data: sr.values, backgroundColor: bg, borderRadius: 6, maxBarThickness: 110 };
   });
-  const valAxis = { beginAtZero: true, grid: { color: '#E1E6EC' }, border:{display:false}, ticks: { callback: v => fmt(v, f), font:{size:fs-2} }, stacked, title: { display: !!spec.yLabel, text: spec.yLabel } };
+  const valAxis = { beginAtZero: spec.zero ?? kind !== 'line', grace: kind==='line' ? '15%' : 0, grid: { color: '#E1E6EC' }, border:{display:false}, ticks: { callback: v => fmt(v, f), font:{size:fs-2} }, stacked, title: { display: !!spec.yLabel, text: spec.yLabel } };
   const catAxis = { grid: { display: false }, border:{color:'#E1E6EC'}, stacked, title: { display: !!spec.xLabel, text: spec.xLabel }, ticks:{font:{size:fs,weight:'500'}, color:'#252528', autoSkip:true, maxRotation:0} };
   return new Chart(cv, {
     type: kind==='line' ? 'line' : kind==='scatter' ? 'scatter' : 'bar',

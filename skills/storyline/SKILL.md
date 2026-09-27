@@ -42,8 +42,9 @@ Approve a 60-day test of automatic follow-ups.
 |---|---|---|---|---|---|
 | 1 | Title + date + presenter + attendees | - | - | - | - |
 | 2 | Agenda: "Three things: the problem, the cause, the fix" | - | - | numbered list | - |
-| 3 | Half of new members are gone by day 90 | F1: 51% (n=4,210) | ✅ PASS | line by starting month | by plan |
-| 3 | A 7-day follow-up doubles who stays | F2: 62% vs 31% | ⏳ pending | bar, highlight | by plan, trend |
+| 3 | Background: rides up 12% since May, all from members | B1-B3 | ✅ PASS | stat tiles + monthly trend line | the mix: member vs casual |
+| 4 | Half of new members are gone by day 90 | F1: 51% (n=4,210) | ✅ PASS | line by starting month | by plan |
+| 5 | A 7-day follow-up doubles who stays | F2: 62% vs 31% | ⏳ pending | bar, highlight | by plan, trend |
 
 ## Left out (and why)
 - F3: real but small ($40K) → appendix
@@ -56,7 +57,7 @@ Approve a 60-day test of automatic follow-ups.
 ```
 
 Structure (tell them what you'll say → say it → tell them what you said):
-- **Intro:** the title slide, then an **agenda slide** that states the big message and the 3 main points up front.
+- **Intro:** the title slide, then an **agenda slide** that states the big message and the 3 main points up front, then **1-2 background slides** ("where things stand today"): headline numbers as stat tiles + the trend over time, with the main mix as a side panel. Background titles are still takeaways ("Rides are up 12% since May, all from members"), and they set up the problem the findings solve.
 - **Body:** the findings, each framed as **value to the company** (what it's worth, what to do), not "what I analyzed".
 - **Close:** a short **summary** slide that repeats the 3 points, plus the ask. End on the ask, not on "Questions?".
 - **Pacing:** main slides ≈ the talk length in minutes (about one per minute; about one per 30 seconds for a quick 5-minute talk). Count only main slides. Side panels, the dashboard and the appendix are backup for Q&A. Get the time limit from `01_objective.md` → Presentation details, and ask the human if it's missing.

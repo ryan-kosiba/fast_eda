@@ -104,6 +104,7 @@ Things we could dig into:
 
 ### Phase 3: Dig (min 25-55)
 - Split the chosen questions into 2-3 groups. **Start one Analysis agent per group, in parallel.**
+- **Also start one more Analysis agent for the Background pack** (see `FE/skills/deep-analysis/SKILL.md` → Background pack): the headline numbers, the trend over time and the main mix. It's quick, and it gives the deck its opening context.
 - Each agent writes its findings to `brain/03_findings.md` under its own heading, and saves its code to `output/analysis/`.
 - When they return, read the findings. Look for:
   - Two findings that disagree → ask the human or send an agent to settle it.
