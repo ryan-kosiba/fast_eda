@@ -13,6 +13,7 @@ Helper agents do the heavy work. They cannot talk to each other or to the human.
 3b. **Conflicts go to the human.** If two agents disagree, a number looks wrong, or the goal is unclear, ask the human with `AskUserQuestion` (2-4 short options, best one first). Never guess on things that change the story.
 4. **Watch the clock.** Run `date` at the start and write the start time in `brain/00_status.md`. Check the time at every phase change. If behind, cut scope, not quality.
 5. **Run agents in parallel** whenever their work does not depend on each other. Send them in one message.
+5b. **Don't wait to start agents.** Start each one as soon as its inputs exist, in the background, and keep talking to the human while they run. Never sit idle waiting on the human or an agent when there's work that can start now.
 6. **Every number must come from code that ran.** No numbers from memory. No made-up numbers.
 7. **Don't rush.** Start by describing the data, then discuss what to do with it. Never open with a menu of choices. The human signs off at 5 checkpoints: ① the goal (agreed in conversation) + presentation details, ② the questions, ③ the dashboard brief, ④ **the story**, ⑤ **the human understands the story**. Never skip one. Building slides before ④ and ⑤ is the #1 way to fail this run.
 
@@ -27,7 +28,7 @@ Your job right now: <one or two lines>.
 Return: the short summary your agent file asks for.
 ```
 
-Agents: `eda-agent.md`, `business-agent.md`, `analysis-agent.md`, `dashboard-agent.md`, `slides-agent.md`, `fact-checker.md`.
+Agents: `eda-agent.md`, `goals-agent.md`, `business-agent.md`, `analysis-agent.md`, `dashboard-agent.md`, `slides-agent.md`, `fact-checker.md`.
 
 ## The run (90 minutes)
 
@@ -43,6 +44,7 @@ Agents: `eda-agent.md`, `business-agent.md`, `analysis-agent.md`, `dashboard-age
 - **At the same time, take a quick look yourself** so the human isn't waiting:
   `python3 FE/skills/eda/scripts/profile.py WORK --out WORK/output/eda_quick --sample 200000`
   plus `head -5` of each file.
+- **As soon as the quick profile is done, start the Goals agent** in the background. It names the business behind the data and proposes 3-5 ranked goals, so ideas are ready when the tour ends.
 - Give the human a **data tour** in plain words (format below). Save it to `brain/02_data.md` under `## Data tour`.
 
 **One table or file → explain the columns.** Group them by what they tell you, in plain words:
@@ -79,9 +81,10 @@ The columns that matter most:
 Rules: plain words, no data-type talk. Say what's **missing** too, because that shapes what's possible. Keep it to about 15 lines. If a column's meaning isn't clear, say "not sure what X means" rather than guess.
 
 End with an open line, not a question menu: **"Want me to go deeper on any of this before we talk about what to do with it?"**
+If the Goals agent is back, add one line: "I've also got some ideas on where to focus when you're ready." If the human says go, or says nothing new, move straight to Phase 2. Don't wait for them to ask.
 
 ### Phase 2: Talk it through together (min 8-20). A CONVERSATION, NOT A FORM
-- When the human is ready, lay out **3-5 possibilities**. Each one gets a plain question, why it would matter to the business, and what the data can (and can't) show:
+- When the human is ready, open with **what business this is** in 2 lines (from the Goals agent: the business type, and whether this data is mostly a revenue or cost story). Then lay out the **3-5 goals** it proposed, best first, with your pick. Each one gets a plain question, why it would matter to the business, and what the data can (and can't) show. If the Goals agent isn't back yet, draft them yourself from the tour; don't wait.
 ```
 Things we could dig into:
 1. Casual riders who ride like members: who they are, and what would make them join
@@ -98,7 +101,7 @@ Things we could dig into:
 - Write it all in `brain/01_objective.md` (goal, focus, audience, `## Presentation details`) and log the goal in `04_decisions.md`.
 
 ### Phase 2b: Turn it into a plan (min 20-25)
-- **Start the Business agent** (the EDA agent should be done by now). It turns the agreed goal into a metric tree and 4-8 questions to test, ranked by business value.
+- **Start the Business agent** (the EDA agent should be done by now). It turns the agreed goal into a metric tree and 4-8 questions to test, ranked by business value. Tell it the `## Business model` section is already written by the Goals agent: check it against the full EDA and fix it if needed, don't redo it.
 - Show the human the top questions in a short list, with what each would tell us. Discuss, then confirm which to keep (`AskUserQuestion` multi-select is fine here, since it's a clear choice now). Write the choice in `brain/04_decisions.md`.
 - If the full EDA found data problems that change the plan (for example "a month is missing"), tell the human here.
 

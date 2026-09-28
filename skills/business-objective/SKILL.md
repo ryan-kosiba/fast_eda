@@ -30,6 +30,23 @@ Write:
 
 Use this to steer everything below: the metric tree should hang off the biggest line the data can touch, and questions should target the biggest levers first.
 
+## How a strategist thinks (use in every step below)
+Revenue, cost and profit are the scoreboard. The job is to explain the machine that makes the score, and what to do next. Check each idea against these:
+
+1. **Does the next customer make money, and when?** Think per customer, not totals: what one customer brings in after every real cost (refunds, support, discounts), vs what it cost to get them, and how many months until that pays back. Profit and cash are different questions. ("$221 to get a customer who brings in $130" is not "ad costs are up". It means we pay people to shop here.)
+2. **Will the revenue last?** Two companies with the same revenue are worth very different amounts if one keeps 42% of customers and the other 19%. Revenue shows the past. Who comes back shows next year. Say what today's retention means for next year's numbers.
+3. **Where did the cost land?** When a change hit its own goal, ask which other number took the hit, on whose team, and how much later. (A shipping change raised profit per order, but fewer customers came back the next quarter.)
+4. **Split the totals.** The same total can be healthy or alarming depending on the mix: new vs returning, product, channel, full price vs discount. Growth that came from discounts looks just like real demand in a total.
+5. **Think about the next dollar, not the average.** Channels fill up: the next $10K on ads buys less than the first $10K did. Averages lead to bad budget calls.
+6. **Cause or just linked?** Members spend 2.3× more. Does the program cause that, or does it attract people who already spend more? Did the sale bring new orders, or pull next month's orders forward at a lower price? Say when the data can't tell, and name the test that would.
+7. **Also weigh:**
+   - Can we undo it? A cheap test we can undo needs less proof than a one-way door.
+   - What's actually scarce (cash, staff, doctor hours, engineering time)? A plan that ignores it won't work.
+   - Too much riding on one thing. One channel bringing in 40% of new customers is a risk, even while it works.
+   - What the data doesn't show: how customers react to price, and what else they could buy instead. Bring general knowledge and say it's an assumption.
+
+Better question than "what does the data say?": **"What would have to be true for this plan to be the right one?"** Then test those things.
+
 ## 1. Metric tree
 Break the goal into things the data can measure. Example for a telehealth company:
 
@@ -45,7 +62,8 @@ For each one, write:
 - **Question:** plain words. ("Do people who get a follow-up within 7 days stay longer?")
 - **Why it matters:** the money or patient effect if it's true. Tie it to a line from step 0 and say if it's revenue (💰) or cost (✂️). Rough size, like "about 5% of revenue" or "doctor time is ~40% of costs, so 10% fewer minutes ≈ 4% of costs".
 - **How to test:** which tables and columns, and which comparison.
-- **Action if true:** what the company would *do* differently.
+- **Action if true:** what the company would *do* differently, and who owns that decision. If it doesn't change a decision, drop it.
+- **Wrong if:** what would make this wrong, and how we'd check. (Often: it's who joins, not what we did; or a cost that shows up somewhere else.)
 - **Score:** Impact (1-5) × Can we prove it in 20 min (1-5).
 
 Rank by score. The best questions have a clear action, a big effect and a quick test.
@@ -61,6 +79,11 @@ Good kinds of questions for health and consumer data:
 
 ## 3. Storyline guess
 One sentence: "If these hold, the story is: ___." This becomes the deck's main message later.
+
+Then write it the way a Director would, in three lines:
+- **Therefore we should** ___.
+- **It's worth about** $___.
+- **We'd be wrong if** ___, **and we'd check by** ___.
 
 ## Output
 Write the whole thing to `brain/01_objective.md` under `## Business model`, `## Metric tree` and `## Questions to test`.
