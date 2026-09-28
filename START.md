@@ -17,6 +17,21 @@ Helper agents do the heavy work. They cannot talk to each other or to the human.
 6. **Every number must come from code that ran.** No numbers from memory. No made-up numbers.
 7. **Don't rush.** Start by describing the data, then discuss what to do with it. Never open with a menu of choices. The human signs off at 5 checkpoints: ① the goal (agreed in conversation) + presentation details, ② the questions, ③ the dashboard brief, ④ **the story**, ⑤ **the human understands the story**. Never skip one. Building slides before ④ and ⑤ is the #1 way to fail this run.
 
+## Two modes: pre-brief, then the timed run
+The data and the task usually arrive **hours before** the 90 minutes start. Use that time. It's allowed; they sent it early on purpose.
+
+**Pre-brief mode** (the human says "pre-brief", "prep", or the clock hasn't started yet):
+- Run Phases 0 → 2b below, at a calm pace: setup, data tour, the Goals agent, talk it through, agree the goal and the questions, and the Background pack from Phase 3.
+- The human still signs off ① the goal and ② the questions. Log both in `04_decisions.md`.
+- Stop there. Write `Mode: pre-brief done` and a 5-line "where we are" in `00_status.md`. Don't start the Analysis agents or the deck.
+
+**Timed run** (the human says "start the clock", or `00_status.md` says `pre-brief done`):
+- Run `date`, write the start time, then re-read `brain/` and give the human a 3-line recap (goal, top questions, anything that changed).
+- Start straight at **Phase 3**. The time saved goes to deeper analysis and the story, not more slides. New timings: Dig 0-40, Dashboard brief ~35, Story session 40-60, Build + check 60-82, Land it 82-90.
+- If the task wording has changed since the pre-brief, flag it first and re-confirm the goal.
+
+No pre-brief? Run everything below with the normal timings.
+
 ## How to start a helper agent
 
 Use the `Agent` tool with `subagent_type: "general-purpose"` (or the named agent if `/agents` lists it). Prompt shape:
@@ -33,7 +48,8 @@ Agents: `eda-agent.md`, `goals-agent.md`, `business-agent.md`, `analysis-agent.m
 ## The run (90 minutes)
 
 ### Phase 0: Setup (min 0-3)
-- `bash FE/install.sh` from WORK. It makes `brain/` and `output/` and installs the skills.
+- `bash FE/install.sh` from WORK. It makes `brain/` and `output/`, installs the skills, and keeps a full local copy of this kit in `WORK/.fast_eda`. It takes a few seconds: only pandas and numpy are required; scipy, statsmodels and the Excel/parquet readers install in the background and are optional.
+- **Code runs on a remote box.** Assume the human can't open `localhost` and may have no network later. Every output must be a file they can download and open.
 - Find the data files: `ls` / `find WORK -maxdepth 2 -name "*.csv" -o -name "*.xlsx" -o -name "*.parquet" -o -name "*.json"` (skip FE, brain and output).
 - If the task came with written instructions (a prompt, a README, a PDF), read them first and copy the exact asks into `brain/01_objective.md` under "What they asked for". These asks beat everything else. Also copy anything about the company (what it does, goals, challenges) into `## Company context`, plus any presentation rules (time limit, format).
 - Tell the human, in one line, what files you found.
@@ -143,7 +159,9 @@ If the human is busy or doesn't answer, use the Recommended options, **tell them
 - Show the human the deck (serve it, as in Phase 5) and ask: "Anything to change?" Make small fixes yourself.
 
 ### Phase 5: Land it (min 84-90)
-- Serve the deck: `cd WORK/output && python3 -m http.server 8765` (run it in the background). Tell the human to open `http://localhost:8765/deck.html` in Chrome. The dashboard is also at `http://localhost:8765/dashboard_main.html`. (If the human is on a different machine, tell them to download `output/deck.html` and open it. Voice works best from a localhost or https address.)
+- Make every HTML file stand alone: `python3 FE/skills/slide-deck/scripts/inline.py WORK/output/deck.html WORK/output/dashboard_*.html`. Run it last (after `inject.py`). Charts then work with no internet.
+- Tell the human: **download `output/deck.html` and open it in Chrome.** One file, nothing else needed. The dashboard is inside it (and in `dashboard_main.html`). Use the keyboard (arrows, G, N, F). Voice control is a bonus that only works from localhost or https, so never plan the talk around it.
+- Only if the code and the browser are on the same machine: `cd WORK/output && python3 -m http.server 8765` and open `http://localhost:8765/deck.html`.
 - Give the human a final 5-line "what to say" cheat sheet: the one big message, 3 findings, 1 ask. Remind them the speaker notes (N) hold the presenter brief.
 - Final update of `brain/00_status.md`.
 
@@ -162,6 +180,7 @@ If the human is busy or doesn't answer, use the Recommended options, **tell them
 | `08_dashboard_brief.md` | What the human wants the dashboard to show | Manager (from human) |
 
 ## If things break
-- No Python packages? `pip install pandas numpy scipy` (add `--user` or `--break-system-packages` if needed).
+- No Python packages? Only pandas + numpy are required: `python3 -m pip install pandas numpy` (add `--user` or `--break-system-packages` if needed). If scipy or statsmodels won't install, don't wait: use the no-scipy fallbacks in `FE/skills/deep-analysis/SKILL.md`.
+- No network at all? The kit is already in `WORK/.fast_eda`. Use that as `FE`.
 - An agent returns junk or times out → run that step yourself, smaller.
 - Running out of time → skip deeper analysis. A clean deck with 3 solid findings beats a messy deck with 10.

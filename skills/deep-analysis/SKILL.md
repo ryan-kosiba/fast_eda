@@ -27,6 +27,7 @@ These count as findings: the Fact Checker checks them too.
    - Averages: Mann-Whitney (skewed data) or t-test
    - Many things at once: logistic or linear regression (statsmodels if you have it, else scikit-learn), and report the effect in plain units
    - Always give the **size** of the effect, not just whether it's significant.
+   - **No scipy or statsmodels?** Don't wait for them. With numpy alone: a two-proportion z-test is `z = (p1-p2)/sqrt(p(1-p)(1/n1+1/n2))`, p-value from `math.erfc(abs(z)/sqrt(2))`. For averages or anything odd, bootstrap: resample each group 2,000 times with `np.random.default_rng(0)` and report the 95% range of the gap. For "many things at once", compare inside matched groups (same plan, same start month) instead of a regression.
 4. Look for traps:
    - **A hidden cause.** Does the gap survive when you control for the obvious third factor (age, plan, channel, start month)?
    - **Simpson's paradox.** Check that the pattern holds inside the main groups.

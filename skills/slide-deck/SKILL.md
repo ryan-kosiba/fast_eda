@@ -68,7 +68,8 @@ Chart spec: `{chart:"bar"|"hbar"|"line"|"stacked"|"scatter", x:[...], series:[{n
 - Open `deck.html?check`: overflowing slides get an orange outline.
 
 ## Presenting (tell the human)
-- Serve it: `cd output && python3 -m http.server 8765`, then open `http://localhost:8765/deck.html` in Chrome. Press **V**, allow the mic, press **F** for fullscreen.
+- Make it one self-contained file (run last, after `inject.py`): `python3 FE/skills/slide-deck/scripts/inline.py WORK/output/deck.html WORK/output/dashboard_*.html`. Then the human downloads `output/deck.html` and opens it in Chrome, **F** for fullscreen. Keys are the main controls.
+- Voice is a bonus: only when code and browser are on the same machine (`cd output && python3 -m http.server 8765`, open `http://localhost:8765/deck.html`, press **V**).
 - Voice: say "Jarvis" then talk normally: "next", "go back", "show me more", "go back to the first slide", "take me to the recommendations", "slide 3", "back out", "show notes", "stop listening", "zoom in on the retention chart", "make chart 2 bigger", "zoom out". A top-left label shows what it heard (set `showTranscript: false` for the real talk).
 - Test the voice parser: `node FE/tests/test_voice.js output/deck.html`
 - Keys: ↓/Space next, ↑ back, → ← side slides, G menu, N notes, Z zoom the first chart, Esc close, 1-9 jump. Click any chart to zoom it.

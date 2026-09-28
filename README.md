@@ -4,9 +4,12 @@ A team of Claude Code agents that turns a dataset into **checked findings** and 
 
 ## Use it (say this to Claude Code, in the folder with the data)
 
-> Clone https://github.com/ryan-kosiba/fast_eda into ./fast_eda, then read fast_eda/START.md and follow it.
+> Run `git clone --depth 1 https://github.com/ryan-kosiba/fast_eda.git .fast_eda && bash .fast_eda/install.sh`, then read .fast_eda/START.md and follow it.
 
-That's it. The Manager explains the data first, talks through options with you, then runs the team.
+That's it. Setup takes a few seconds: only pandas and numpy are required, the rest installs in the background and is optional. Works on a remote box: the deck comes out as one file you download and open.
+
+**Got the data early?** Say "pre-brief" first. The Manager does the data tour, goals and questions before the clock starts, so the timed 90 minutes opens straight at the analysis.
+ The Manager explains the data first, talks through options with you, then runs the team.
 
 Plugin install (optional): `/plugin marketplace add ryan-kosiba/fast_eda`, then `/plugin install fast-eda@fast-eda`, then `/fast-eda:fast-eda`.
 
@@ -36,13 +39,14 @@ The **communication-style** skill keeps every message to you short and plain.
 ~50    Dashboard brief Manager asks you: what question, which numbers, which filters
 55-70  Story session   Story built from the findings; you approve it + confirm you understand it (no slides before this)
 70-84  Build + check   Slides ‖ Dashboard ‖ Fact Checker → output/deck.html
-84-90  Land it         serve deck, 5-line talk track
+84-90  Land it         one self-contained deck.html to download, 5-line talk track
 ```
 
 ## The deck
 - One HTML file. It always fits the screen (1600×900 stage, scaled to fit).
 - ↓/↑ = main slides. →/← = side slides with breakdowns.
-- **Voice (Chrome):** press **V**, then say "Jarvis next", "Jarvis back", "Jarvis more", "Jarvis go to recommendations", or "Jarvis slide 3".
+- Self-contained: after `inline.py`, charts work with no internet. Open it straight from the file.
+- **Voice (Chrome, bonus):** only from localhost or https. Press **V**, then say "Jarvis next", "Jarvis back", "Jarvis more", "Jarvis go to recommendations", or "Jarvis slide 3".
 - **Dashboards** inside the deck: filters, stat tiles and charts update together. "Jarvis, filter Premium" or "Jarvis, clear filters".
 - **Zoom:** click a chart, or say "Jarvis, zoom in on the retention chart". Then "Jarvis, zoom out".
 - G = menu, N = speaker notes, Z = zoom, F = fullscreen.

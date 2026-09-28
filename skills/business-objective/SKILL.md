@@ -12,7 +12,10 @@ Before any metrics, name the business. Look at the tables and columns and ask: w
 
 Write:
 - **Business type:** one line. ("Subscription telehealth: members pay monthly, doctors see them online.") If unsure, list the top 2 guesses and what in the data points to each.
-- **How the money usually splits:** a typical revenue and cost breakdown for this kind of business, from general industry knowledge. Rough %, and say it's a typical range, not this company's numbers.
+- **How the money usually splits:** a typical revenue and cost breakdown for **this** kind of business (the `Industry:` line), from general industry knowledge. Rough %, and say it's a typical range, not this company's numbers. The example below is telehealth; use the right one:
+  - Online retail / DTC: product cost 35-55%, shipping + returns 10-20%, marketing to get customers 15-30%. Levers: repeat rate, basket size, discounts, returns.
+  - Marketplace: revenue = take rate × sales volume; costs = marketing to both sides, support, payments. Levers: supply/demand balance, repeat buyers.
+  - Subscription software: revenue = seats × price, minus churn; costs = sales + marketing 30-50%, hosting, support. Levers: churn, upgrades, payback on sales spend.
 
   ```
   Revenue (typical subscription telehealth)
@@ -48,7 +51,7 @@ Revenue, cost and profit are the scoreboard. The job is to explain the machine t
 Better question than "what does the data say?": **"What would have to be true for this plan to be the right one?"** Then test those things.
 
 ## 1. Metric tree
-Break the goal into things the data can measure. Example for a telehealth company:
+Break the goal into things the data can measure. Example for a telehealth company (build the one for this business):
 
 ```
 Revenue = active members × visits per member × revenue per visit
@@ -68,7 +71,7 @@ For each one, write:
 
 Rank by score. The best questions have a clear action, a big effect and a quick test.
 
-Good kinds of questions for health and consumer data:
+Good kinds of questions for most customer data:
 - **Who stays and who leaves** (retention by starting month, by channel, by first experience)
 - **What happens before someone leaves** (the signals before they drop off)
 - **Where the money is** (the few groups that bring in most of the value, and who's underserved)

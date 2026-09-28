@@ -9,6 +9,7 @@
   "skills": "./skills/",
   "agents": [
     "./agents/eda-agent.md",
+    "./agents/goals-agent.md",
     "./agents/business-agent.md",
     "./agents/analysis-agent.md",
     "./agents/dashboard-agent.md",

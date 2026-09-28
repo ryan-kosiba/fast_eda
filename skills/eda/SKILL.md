@@ -9,7 +9,7 @@ description: Exploratory data analysis for fast_eda. Profiles every data file (s
 ```bash
 python3 FE/skills/eda/scripts/profile.py WORK --out WORK/output/eda
 ```
-This prints a profile and saves `output/eda/profile.json` and `output/eda/profile.md`. Needs pandas. If it's missing, run `pip install pandas numpy scipy openpyxl pyarrow`.
+This prints a profile and saves `output/eda/profile.json` and `output/eda/profile.md`. Needs only pandas and numpy (`python3 -m pip install pandas numpy`). Excel and parquet files also need openpyxl / pyarrow; if those won't install, say so and skip those files rather than wait.
 
 ## Step 2: Check what the script can't (5-8 min)
 Write short pandas code (save it to `output/eda/checks.py`) that answers:
