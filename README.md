@@ -29,7 +29,7 @@ Plugin install (optional): `/plugin marketplace add ryan-kosiba/fast_eda`, then 
 | **Analysis** (2-3 in parallel) | Tests the questions with real code and stats |
 | **Dashboard** | Builds a filterable dashboard inside the deck (plus a standalone file). The Manager asks you what it should show first |
 | **Fact Checker** | Re-computes every number from scratch before it goes on a slide |
-| **Slides** | Builds `output/deck.html` in a clean, consistent style |
+| **Slides** | Builds `output/deck.html` in a clean, consistent style, plus a one-page executive overview (`output/one_pager.html`) from the same story |
 
 The **communication-style** skill keeps every message to you short and plain.
 
@@ -40,10 +40,11 @@ The **communication-style** skill keeps every message to you short and plain.
  3-8   Data tour       Manager explains the data in plain words (EDA + Goals agents run in background)
  8-20  Talk it through Manager proposes goals (from the Goals agent), you discuss and agree one
 20-25  Plan            Business agent → questions to test → you confirm
+  ~25  Start building   Deck shell ‖ draft dashboard, in the background (finding slides wait for the story)
 25-55  Dig             Analysis agents ‖ ‖  → brain/03_findings.md
 ~50    Dashboard brief Manager asks you: what question, which numbers, which filters
 55-70  Story session   Story built from the findings; you approve it + confirm you understand it (no slides before this)
-70-84  Build + check   Slides ‖ Dashboard ‖ Fact Checker → output/deck.html
+70-84  Build + check   Slides ‖ Dashboard ‖ Fact Checker → output/deck.html + one_pager.html
 84-90  Land it         one self-contained deck.html to download, 5-line talk track
 ```
 

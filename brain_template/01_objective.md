@@ -11,7 +11,7 @@
 ## Presentation details (title slide + pacing)
 - Date: (today, from `date`)
 - Presented by: Ryan Kosiba
-- Attendees: (ask the human: names + roles)
+- Attendees: (names) (default; confirm with the human and add roles if known)
 - Talk length: (minutes; sets the main slide count ≈ 1 per minute)
 - Equipment / rules: (screen share? their laptop? any rules from the interviewer)
 

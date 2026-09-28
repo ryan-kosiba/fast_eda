@@ -67,6 +67,9 @@ Chart spec: `{chart:"bar"|"hbar"|"line"|"stacked"|"scatter", x:[...], series:[{n
   `"<chrome>" --headless=new --screenshot=output/shot1.png --window-size=1600,900 "file://WORK/output/deck.html#2.1"`
 - Open `deck.html?check`: overflowing slides get an orange outline.
 
+## One-pager (leave-behind)
+Template: `FE/skills/slide-deck/template/one_pager.html`. Same story and numbers as the deck, one printed page, no scripts. Fill every `{{…}}`. Max 5 findings. If it spills onto a second page, cut words.
+
 ## Presenting (tell the human)
 - Make it one self-contained file (run last, after `inject.py`): `python3 FE/skills/slide-deck/scripts/inline.py WORK/output/deck.html WORK/output/dashboard_*.html`. Then the human downloads `output/deck.html` and opens it in Chrome, **F** for fullscreen. Keys are the main controls.
 - Voice is a bonus: only when code and browser are on the same machine (`cd output && python3 -m http.server 8765`, open `http://localhost:8765/deck.html`, press **V**).

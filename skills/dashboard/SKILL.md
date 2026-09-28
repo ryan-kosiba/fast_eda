@@ -1,6 +1,6 @@
 ---
 name: dashboard
-description: Builds an interactive, filterable clean dashboard that lives inside the slide deck (and as a standalone file). Filters, stat tiles and charts all update together, and "Jarvis, filter Premium" works by voice. Use only after the Manager has agreed the dashboard brief with the human (brain/08_dashboard_brief.md).
+description: Builds an interactive, filterable clean dashboard that lives inside the slide deck (and as a standalone file). Filters, stat tiles and charts all update together, and "Jarvis, filter Premium" works by voice. Use only after the Manager has agreed the dashboard brief with the human (brain/08_dashboard_brief.md), as a draft or final.
 ---
 
 # Dashboard skill

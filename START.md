@@ -15,13 +15,13 @@ Helper agents do the heavy work. They cannot talk to each other or to the human.
 5. **Run agents in parallel** whenever their work does not depend on each other. Send them in one message.
 5b. **Don't wait to start agents.** Start each one as soon as its inputs exist, in the background, and keep talking to the human while they run. Never sit idle waiting on the human or an agent when there's work that can start now.
 6. **Every number must come from code that ran.** No numbers from memory. No made-up numbers.
-7. **Don't rush.** Start by describing the data, then discuss what to do with it. Never open with a menu of choices. The human signs off at 5 checkpoints: ① the goal (agreed in conversation) + presentation details, ② the questions, ③ the dashboard brief, ④ **the story**, ⑤ **the human understands the story**. Never skip one. Building slides before ④ and ⑤ is the #1 way to fail this run.
+7. **Don't rush.** Start by describing the data, then discuss what to do with it. Never open with a menu of choices. The human signs off at 5 checkpoints: ① the goal (agreed in conversation) + presentation details, ② the questions, ③ the dashboard brief, ④ **the story**, ⑤ **the human understands the story**. Never skip one. Building **finding slides** before ④ and ⑤ is the #1 way to fail this run. The deck shell and the dashboard start earlier (Phase 2c), because they don't lock the story.
 
 ## Two modes: pre-brief, then the timed run
 The data and the task usually arrive **hours before** the 90 minutes start. Use that time. It's allowed; they sent it early on purpose.
 
 **Pre-brief mode** (the human says "pre-brief", "prep", or the clock hasn't started yet):
-- Run Phases 0 → 2b below, at a calm pace: setup, data tour, the Goals agent, talk it through, agree the goal and the questions, and the Background pack from Phase 3.
+- Run Phases 0 → 2c below, at a calm pace: setup, data tour, the Goals agent, talk it through, agree the goal and the questions, the Background pack from Phase 3, and the draft deck shell + dashboard.
 - The human still signs off ① the goal and ② the questions. Log both in `04_decisions.md`.
 - Stop there. Write `Mode: pre-brief done` and a 5-line "where we are" in `00_status.md`. Don't start the Analysis agents or the deck.
 
@@ -112,7 +112,7 @@ Things we could dig into:
 - Then ask **in plain text**: "What jumps out at you? Or is there something else on your mind?" **Don't use `AskUserQuestion` here.** Let the human think out loud.
 - **Discuss.** Answer their questions, and run a quick check if they ask ("How many casual riders ride 3+ times a week?"). Push back if an idea can't be supported by the data. Build on their ideas.
 - When it settles, **play it back** in 2 lines: "So the goal: <X>. We'll focus on <Y> and <Z>. Right?" Wait for a yes.
-- Only then, ask the **quick setup questions** (one `AskUserQuestion` is fine here): the audience (Leadership / Product / Operations) and the **talk length** (5 / 10 / 15 / 20 min; this sets the slide count). Then ask in plain text: "For the title slide: who's attending (names + roles)? Presenter is Ryan Kosiba, date is <today>. Any rules or equipment I should know about (their screen, a time limit)?"
+- Only then, ask the **quick setup questions** (one `AskUserQuestion` is fine here): the audience (Leadership / Product / Operations) and the **talk length** (5 / 10 / 15 / 20 min; this sets the slide count). Then ask in plain text: "For the title slide: attendees are Name, Name and Name. Still right? Their roles? Presenter is Ryan Kosiba, date is <today>. Any rules or equipment I should know about (their screen, a time limit)?"
   If they don't know the attendees yet, write `Attendees: TBD` and ask again at the story session.
 - Write it all in `brain/01_objective.md` (goal, focus, audience, `## Presentation details`) and log the goal in `04_decisions.md`.
 
@@ -120,6 +120,13 @@ Things we could dig into:
 - **Start the Business agent** (the EDA agent should be done by now). It turns the agreed goal into a metric tree and 4-8 questions to test, ranked by business value. Tell it the `## Business model` section is already written by the Goals agent: check it against the full EDA and fix it if needed, don't redo it.
 - Show the human the top questions in a short list, with what each would tell us. Discuss, then confirm which to keep (`AskUserQuestion` multi-select is fine here, since it's a clear choice now). Write the choice in `brain/04_decisions.md`.
 - If the full EDA found data problems that change the plan (for example "a month is missing"), tell the human here.
+
+### Phase 2c: Start the artifacts (right after ②, in the background)
+Don't wait for findings to start building. As soon as the questions are agreed:
+- **Dashboard brief, first pass.** One `AskUserQuestion` (the 4 questions in Phase 3b), with options drawn from the goal and `02_data.md`. Write it to `brain/08_dashboard_brief.md` with `Status: agreed (draft)`. If the human is busy, use the Recommended options and say so in one line.
+- **Start the Dashboard agent** on that brief. It builds from the cleaning rules now, and re-checks its tiles against the findings later.
+- **Start the Slides agent in shell mode.** It builds `output/deck.html` (and a draft `output/one_pager.html`) with the title slide, a draft agenda, the background slides (when the Background pack is back), the dashboard slide, and empty slots for findings, recommendations and the summary. Every slot is marked DRAFT.
+- These run alongside the Analysis agents. They never write to `03_findings.md`.
 
 ### Phase 3: Dig (min 25-55)
 - Split the chosen questions into 2-3 groups. **Start one Analysis agent per group, in parallel.**
@@ -130,8 +137,8 @@ Things we could dig into:
   - A finding that is huge or surprising → send the Fact Checker right away.
 - **Each time an Analysis agent returns, give the human a "story so far" check-in** (Stage 1 of `FE/skills/storyline/SKILL.md`): what's new, where the story is heading, and whether to keep going. The story forms WITH the human, from real results.
 
-### Phase 3b: Dashboard brief (about min 50, while the analysis finishes). ASK, DON'T ASSUME
-Never build the dashboard until the human says what they want to see. Use the findings and `02_data.md` to offer smart options, then ask **one** `AskUserQuestion` call with up to 4 questions:
+### Phase 3b: Dashboard brief, final (about min 50, while the analysis finishes). ASK, DON'T ASSUME
+The draft from Phase 2c is already built. Now that findings exist, re-ask (or confirm the draft) so the dashboard fits the story. Never finalize it until the human says what they want to see. Use the findings and `02_data.md` to offer smart options, then ask **one** `AskUserQuestion` call with up to 4 questions:
 1. **"What should the dashboard help someone answer?"** Offer 2-3 options tied to the goal (for example "Where are we losing members?" or "Which channels bring the best members?"), best first.
 2. **"Which numbers go on top?"** (multi-select, max 5). Offer only numbers the data can compute, starting with the ones behind the top findings.
 3. **"Which filters?"** (multi-select, 2-3). Offer the fields that split the findings best (plan, channel, month, region…).
@@ -152,15 +159,15 @@ If the human is busy or doesn't answer, use the Recommended options, **tell them
 
 ### Phase 4: Build + check (min 70-84), in parallel. ONLY AFTER THE STORY IS APPROVED
 - **Fact Checker** (if it isn't already running): check `brain/03_findings.md` from scratch.
-- **Start the Slides agent.** Tell it: "Build exactly the approved story in `brain/06_story.md`." Also tell it where the dashboard slide goes (from the brief).
-- **Start the Dashboard agent** at the same time (only if the brief says `agreed`). It builds the spec, then you (or the Slides agent) add its slide snippet and run `inject.py` on the final deck.
+- **Start the Slides agent in final mode.** Tell it: "Fill the shell with exactly the approved story in `brain/06_story.md`." Also tell it where the dashboard slide goes (from the brief).
+- **Restart the Dashboard agent** at the same time (only if the brief says `agreed`): update the draft to the final brief and match its tiles to the checked findings. It builds the spec, then you (or the Slides agent) add its slide snippet and run `inject.py` on the final deck.
 - When the Fact Checker returns fixes, send them to the Slides agent (or fix the deck yourself if it's small).
-- Then run the Fact Checker one more time on the deck itself.
+- Then run the Fact Checker one more time on the deck and the one-pager.
 - Show the human the deck (serve it, as in Phase 5) and ask: "Anything to change?" Make small fixes yourself.
 
 ### Phase 5: Land it (min 84-90)
 - Make every HTML file stand alone: `python3 FE/skills/slide-deck/scripts/inline.py WORK/output/deck.html WORK/output/dashboard_*.html`. Run it last (after `inject.py`). Charts then work with no internet.
-- Tell the human: **download `output/deck.html` and open it in Chrome.** One file, nothing else needed. The dashboard is inside it (and in `dashboard_main.html`). Use the keyboard (arrows, G, N, F). Voice control is a bonus that only works from localhost or https, so never plan the talk around it.
+- Tell the human: **download `output/deck.html` and `output/one_pager.html`, and open them in Chrome.** The one-pager is the leave-behind (Cmd+P → Save as PDF if they want a PDF). One file, nothing else needed. The dashboard is inside it (and in `dashboard_main.html`). Use the keyboard (arrows, G, N, F). Voice control is a bonus that only works from localhost or https, so never plan the talk around it.
 - Only if the code and the browser are on the same machine: `cd WORK/output && python3 -m http.server 8765` and open `http://localhost:8765/deck.html`.
 - Give the human a final 5-line "what to say" cheat sheet: the one big message, 3 findings, 1 ask. Remind them the speaker notes (N) hold the presenter brief.
 - Final update of `brain/00_status.md`.

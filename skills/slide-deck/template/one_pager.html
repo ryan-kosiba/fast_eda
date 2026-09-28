@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Executive overview</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!--
+  One-page executive overview. Same story and numbers as deck.html (from brain/06_story.md + checked findings).
+  Fill every {{…}}. Keep it to ONE printed page: max 5 findings, one line each for number / confidence / decision.
+  No scripts, no external files needed (fonts fall back to system fonts). Print: Cmd+P → Save as PDF.
+-->
+<style>
+:root{--navy:#00244D;--blue:#2B8FFF;--light:#E5F1FF;--ink:#252528;--slate:#5C6370;--grey:#A8B3BF;--line:#E1E6EC;--orange:#F97316;--green:#0E9F6E;
+  --font:Poppins,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+*{box-sizing:border-box;margin:0}
+body{font:400 13px/1.45 var(--font);color:var(--ink);background:#F4F6F9}
+.page{max-width:8.5in;margin:24px auto;background:#fff;padding:0.55in 0.6in;box-shadow:0 2px 16px rgba(0,36,77,.08)}
+.kicker{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+h1{font-size:24px;line-height:1.25;font-weight:600;color:var(--navy);margin:6px 0 4px}
+.meta{color:var(--slate);font-size:12px}
+.ask{margin:16px 0 18px;background:var(--light);border-left:4px solid var(--blue);padding:10px 14px;border-radius:0 8px 8px 0}
+.ask b{color:var(--navy)}
+h2{font-size:13px;font-weight:600;color:var(--navy);text-transform:uppercase;letter-spacing:.08em;margin:18px 0 8px}
+table{width:100%;border-collapse:collapse}
+th{font-size:10.5px;font-weight:600;color:var(--slate);text-align:left;text-transform:uppercase;letter-spacing:.06em;padding:0 8px 6px 0;border-bottom:1px solid var(--line)}
+td{padding:8px 8px 8px 0;border-bottom:1px solid var(--line);vertical-align:top}
+td.n{font-weight:700;color:var(--navy);white-space:nowrap;font-size:14px}
+td.num{width:22px;color:var(--blue);font-weight:700}
+.conf{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.high{background:#E3F6EE;color:var(--green)}.med{background:var(--light);color:var(--navy)}.low{background:#FEEBDC;color:var(--orange)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+ul{padding-left:16px}li{margin:3px 0}
+.foot{margin-top:18px;padding-top:10px;border-top:1px solid var(--line);color:var(--slate);font-size:11px;display:flex;justify-content:space-between}
+@media print{body{background:#fff}.page{margin:0;box-shadow:none;max-width:none;padding:0.45in 0.5in}@page{size:letter;margin:0}}
+@media (max-width:640px){.page{margin:0;padding:20px 16px}.cols{grid-template-columns:1fr}td.n{white-space:normal}}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="kicker">Executive overview · {{Company}}</div>
+  <h1>{{The big message, one sentence with the key number}}</h1>
+  <div class="meta">{{Date}} · Prepared by {{Presenter}} · Data: {{what data, date range}}</div>
+
+  <div class="ask"><b>The ask:</b> {{the one decision we want, with its size}}</div>
+
+  <h2>What we found</h2>
+  <table>
+    <tr><th></th><th>Finding</th><th>Number</th><th>Confidence</th><th>Decision it drives</th></tr>
+    <tr><td class="num">1</td><td>{{takeaway sentence}}</td><td class="n">{{number}}</td><td><span class="conf high">High</span></td><td>{{what to do · owner}}</td></tr>
+    <tr><td class="num">2</td><td>{{takeaway sentence}}</td><td class="n">{{number}}</td><td><span class="conf med">Medium</span></td><td>{{what to do · owner}}</td></tr>
+    <tr><td class="num">3</td><td>{{takeaway sentence}}</td><td class="n">{{number}}</td><td><span class="conf low">Low</span></td><td>{{what to do · owner}}</td></tr>
+  </table>
+
+  <div class="cols">
+    <div>
+      <h2>What we'd do first</h2>
+      <ul>
+        <li>{{move 1, ranked, with its size}}</li>
+        <li>{{move 2}}</li>
+        <li>{{move 3}}</li>
+      </ul>
+    </div>
+    <div>
+      <h2>What would change our mind</h2>
+      <ul>
+        <li>{{we'd be wrong if ___; we'd check by ___}}</li>
+        <li>{{biggest data caveat, in plain words}}</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot"><span>Every number comes from code that ran and was re-checked independently.</span><span>Full deck: deck.html</span></div>
+</div>
+</body>
+</html>
