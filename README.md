@@ -4,12 +4,17 @@ A team of Claude Code agents that turns a dataset into **checked findings** and 
 
 ## Use it (say this to Claude Code, in the folder with the data)
 
-> Run `git clone --depth 1 https://github.com/ryan-kosiba/fast_eda.git .fast_eda && bash .fast_eda/install.sh`, then read .fast_eda/START.md and follow it.
+> Download ryan-kosiba/fast_eda from GitHub and follow its START.md.
 
-That's it. Setup takes a few seconds: only pandas and numpy are required, the rest installs in the background and is optional. Works on a remote box: the deck comes out as one file you download and open.
+That's it. `START.md` runs setup first (a few seconds: only pandas and numpy are required, the rest installs in the background). The Manager explains the data, proposes goals, talks them through with you, then runs the team. Works on a remote box: the deck comes out as one file you download and open.
 
-**Got the data early?** Say "pre-brief" first. The Manager does the data tour, goals and questions before the clock starts, so the timed 90 minutes opens straight at the analysis.
- The Manager explains the data first, talks through options with you, then runs the team.
+**Got the data early?** Add "pre-brief" to the end:
+
+> Download ryan-kosiba/fast_eda from GitHub and follow its START.md. Pre-brief.
+
+The Manager does the data tour, goals and questions before the clock starts. Later, say "start the clock" and the timed 90 minutes opens straight at the analysis.
+
+Exact commands, if you'd rather be explicit: `git clone --depth 1 https://github.com/ryan-kosiba/fast_eda.git .fast_eda && bash .fast_eda/install.sh`, then read `.fast_eda/START.md`.
 
 Plugin install (optional): `/plugin marketplace add ryan-kosiba/fast_eda`, then `/plugin install fast-eda@fast-eda`, then `/fast-eda:fast-eda`.
 
