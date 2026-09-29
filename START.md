@@ -112,7 +112,7 @@ Things we could dig into:
 - Then ask **in plain text**: "What jumps out at you? Or is there something else on your mind?" **Don't use `AskUserQuestion` here.** Let the human think out loud.
 - **Discuss.** Answer their questions, and run a quick check if they ask ("How many casual riders ride 3+ times a week?"). Push back if an idea can't be supported by the data. Build on their ideas.
 - When it settles, **play it back** in 2 lines: "So the goal: <X>. We'll focus on <Y> and <Z>. Right?" Wait for a yes.
-- Only then, ask the **quick setup questions** (one `AskUserQuestion` is fine here): the audience (Leadership / Product / Operations) and the **talk length** (5 / 10 / 15 / 20 min; this sets the slide count). Then ask in plain text: "For the title slide: attendees are Name, Name and Name. Still right? Their roles? Presenter is Ryan Kosiba, date is <today>. Any rules or equipment I should know about (their screen, a time limit)?"
+- Only then, ask the **quick setup questions** (one `AskUserQuestion` is fine here): the audience (Leadership / Product / Operations) and the **talk length** (5 / 10 / 15 / 20 min; this sets the slide count). Then ask in plain text: "For the title slide: who's attending (names + roles)? Presenter is Ryan Kosiba, date is <today>. Any rules or equipment I should know about (their screen, a time limit)?"
   If they don't know the attendees yet, write `Attendees: TBD` and ask again at the story session.
 - Write it all in `brain/01_objective.md` (goal, focus, audience, `## Presentation details`) and log the goal in `04_decisions.md`.
 
