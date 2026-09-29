@@ -1,6 +1,6 @@
 ---
 name: slide-deck
-description: Builds a clean single-file HTML slide deck from checked findings. Slides always fit the screen, side slides (right/left) hold breakdowns, and "Jarvis" voice commands drive it in Chrome. Use when it's time to present results.
+description: Builds a clean, single-file HTML slide deck from checked findings. Slides always fit the screen, side slides (right/left) hold breakdowns, and "Jarvis" voice commands drive it in Chrome. Use when it's time to present results.
 ---
 
 # Slide Deck skill

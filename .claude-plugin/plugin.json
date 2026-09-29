@@ -1,7 +1,7 @@
 {
   "name": "fast-eda",
   "version": "0.1.0",
-  "description": "A team of agents that turns a dataset into checked findings and a clean voice-controlled HTML deck.",
+  "description": "A team of agents that turns a dataset into checked findings and a clean, voice-controlled HTML deck.",
   "author": {
     "name": "Ryan Kosiba"
   },

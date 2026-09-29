@@ -1,6 +1,6 @@
 # fast_eda
 
-A team of Claude Code agents that turns a dataset into **checked findings** and a **clean voice-controlled slide deck** in about 90 minutes.
+A team of Claude Code agents that turns a dataset into **checked findings** and a **clean, voice-controlled slide deck** in about 90 minutes.
 
 ## Use it (say this to Claude Code, in the folder with the data)
 
